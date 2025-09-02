@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "167411435556",
+    "project_id": "pruebaloam",
+    "storage_bucket": "pruebaloam.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:167411435556:android:78f1b55a11f908e49cf0b1",
+        "android_client_info": {
+          "package_name": "com.example.trabajo1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMYGE0U7BX_WLO1tOyZEad0zxZWutU1yA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
