@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Trabajo 1</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_inicio">Inicio</string>
+    <string name="title_chat">Chat</string>
+    <string name="title_consejo">Consejo</string>
+    <string name="title_mas">Más</string>
+    <string name="title_hora">01:39</string>
+    <string name="title_bateria">69%</string>
+    <string name="title_titulo_pantalla_inicio">Inicio</string>
 </resources>
