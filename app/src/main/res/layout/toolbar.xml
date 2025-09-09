@@ -30,6 +30,7 @@
             tools:layout_editor_absoluteY="30dp">
 
             <!-- Hora -->
+
             <TextView
                 android:id="@+id/txtHora"
                 android:layout_width="wrap_content"
@@ -57,24 +58,27 @@
 
             <!-- Porcentaje batería -->
             <TextView
-                android:id="@+id/txtBattery"
+                android:id="@+id/txtBatteryPercentage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_porcentaje_bateria"
                 android:textColor="@android:color/white" />
 
             <!-- Icono batería -->
-            <ImageView
-                android:id="@+id/iconBattery"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="4dp"
-                android:contentDescription="@string/linterna"
-                android:src="@drawable/ic_bateria_24dp" />
 
             <!-- Botón linterna -->
             <ImageButton
-                android:id="@+id/btnFlash"
+                android:id="@+id/iconBattery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/linterna"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:src="@drawable/ic_bateria_24dp" />
+
+            <ImageButton
+                android:id="@+id/btnLinterna"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
