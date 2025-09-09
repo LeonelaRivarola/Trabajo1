@@ -5,6 +5,10 @@
     <string name="title_consejo">Consejo</string>
     <string name="title_mas">Más</string>
     <string name="title_hora">01:39</string>
-    <string name="title_bateria">69%</string>
+    <string name="title_porcentaje_bateria">69%</string>
     <string name="title_titulo_pantalla_inicio">Inicio</string>
+    <string name="volver">Volver</string>
+    <string name="bateria">Batería</string>
+    <string name="linterna">Linterna</string>
+    <string name="configuracion">Configuración</string>
 </resources>
