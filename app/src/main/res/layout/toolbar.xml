@@ -13,6 +13,7 @@
         android:layout_height="0dp"
         android:background="?attr/colorPrimary"
         android:paddingTop="30dp"
+        app:navigationIcon="@drawable/ic_flecha_volver_24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -27,18 +28,6 @@
             android:paddingEnd="8dp"
             tools:layout_editor_absoluteX="16dp"
             tools:layout_editor_absoluteY="30dp">
-
-            <!-- Flecha atrás -->
-            <ImageButton
-                android:id="@+id/btnBack"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/volver"
-                android:minWidth="48dp"
-                android:minHeight="48dp"
-                android:src="@drawable/ic_flecha_volver_24dp"
-                android:visibility="visible" />
 
             <!-- Hora -->
             <TextView
