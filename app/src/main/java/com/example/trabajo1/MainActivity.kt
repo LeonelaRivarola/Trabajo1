@@ -12,8 +12,9 @@ import android.widget.TextView
 import android.widget.Toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.postDelayed
+import androidx.appcompat.widget.Toolbar
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
@@ -21,7 +22,6 @@ import com.example.trabajo1.databinding.ActivityMainBinding
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.logging.Handler
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,9 +40,9 @@ class MainActivity : AppCompatActivity() {
         // codigo toolbar:
         //ocultar la toolbar de android por defecto para dejar visible la nuestra que es personalizada.
         supportActionBar?.hide()
-        // Configuramos la toolbar
-        //setSupportActionBar(binding.customToolbar)
-        //supportActionBar?.setDisplayShowTitleEnabled(false) // Oculta el título por defecto
+
+        val toolbar: Toolbar = binding.customToolbar.customToolbar
+        setSupportActionBar(toolbar)
 
         //código para inciar el reloj:
         iniciarReloj()
@@ -70,8 +70,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         //barra de navegación inferior:
+        // Barra de navegación inferior:
         val navView: BottomNavigationView = binding.navView
-        val navController = findNavController(R.id.nav_host_fragment_activity_main)
+
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
+        val navController = navHostFragment.navController
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
@@ -158,8 +163,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
     //-----------------------------------------------------------------------------------------------------------------------------------
-
-
 
     override fun onDestroy() {
         super.onDestroy()
