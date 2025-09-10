@@ -13,7 +13,6 @@ import android.widget.Toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -91,10 +90,11 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.navigation_inicio -> txtFragment.text = "Inicio"
-                R.id.navigation_chat -> txtFragment.text = "Chat"
-                R.id.navigation_consejo -> txtFragment.text = "Consejo"
-                R.id.navigation_mas -> txtFragment.text = "Más"
+                R.id.navigation_inicio -> // Dentro de una Activity o Fragment
+                    txtFragment.text = getString(R.string.title_inicio)
+                R.id.navigation_chat -> getString(R.string.title_chat)
+                R.id.navigation_consejo -> getString(R.string.title_consejo)
+                R.id.navigation_mas -> getString(R.string.title_mas)
             }
         }
 
@@ -153,7 +153,7 @@ class MainActivity : AppCompatActivity() {
             val porcentaje = (level * 100 / scale.toFloat()).toInt()
 
             // Mostrar porcentaje
-            findViewById<TextView>(R.id.txtBatteryPercentage).text = "$porcentaje%"
+            findViewById<TextView>(R.id.txtBatteryPercentage).text = getString(R.string.battery_percentage, porcentaje)
 
             // Calcular duración aproximada (muy estimativa, ej: 5 horas con 100%)
             val horasEstimadas = (porcentaje / 20) // ejemplo: 100% ≈ 5 horas

@@ -11,4 +11,8 @@
     <string name="bateria">Batería</string>
     <string name="linterna">Linterna</string>
     <string name="configuracion">Configuración</string>
+    <string name="battery_percentage">%d%%</string>
+    <string name="dolar_compra">Compra: %s</string>
+    <string name="dolar_venta">Venta: %s</string>
+    <string name="dolar_actualizado">Actualizado por última vez: %s</string>
 </resources>

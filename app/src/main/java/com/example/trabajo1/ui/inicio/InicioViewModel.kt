@@ -9,9 +9,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 class InicioViewModel : ViewModel() {
 
+    //codigo para el widget del dólar
     data class Dolar(
         val moneda: String,
         val casa: String,
@@ -45,6 +47,63 @@ class InicioViewModel : ViewModel() {
             }
             override fun onFailure(call: Call<Dolar>, t: Throwable) {
                 // Manejar error (puedes loguear o mostrar valor default)
+            }
+        })
+    }
+
+    //codigo noticias:
+    data class Noticia(
+        val id: String,
+        val title: String,
+        val description: String?,
+        val content: String?,
+        val url: String,
+        val image: String?,
+        val publishedAt: String,
+        val source: Source
+    )
+
+    data class Source(
+        val id: String?,
+        val name: String,
+        val url: String?
+    )
+    private val retrofitGNews = Retrofit.Builder()
+        .baseUrl("https://gnews.io/api/v4/") // Base URL de GNews
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    interface GNewsApiService {
+        @GET("top-headlines")
+        fun getTopHeadlines(
+            @Query("topic") topic: String = "technology",
+            @Query("country") country: String = "ar",
+            @Query("lang") lang: String = "es",        // Noticias en español
+            @Query("token") apiKey: String = "231029e077f84902fc438c5a2613b89c"
+        ): Call<GNewsResponse>
+    }
+
+
+    data class GNewsResponse(
+        val totalArticles: Int,
+        val articles: List<Noticia>
+    )
+
+    private val gNewsApi = retrofitGNews.create(GNewsApiService::class.java)
+
+    private val _noticias = MutableLiveData<List<Noticia>>()
+    val noticias: LiveData<List<Noticia>> get() = _noticias
+
+    fun cargarNoticias() {
+        gNewsApi.getTopHeadlines().enqueue(object : Callback<GNewsResponse> {
+            override fun onResponse(call: Call<GNewsResponse>, response: Response<GNewsResponse>) {
+                if (response.isSuccessful) {
+                    _noticias.value = response.body()?.articles ?: emptyList()
+                }
+            }
+
+            override fun onFailure(call: Call<GNewsResponse>, t: Throwable) {
+                _noticias.value = emptyList() // o manejar error
             }
         })
     }
