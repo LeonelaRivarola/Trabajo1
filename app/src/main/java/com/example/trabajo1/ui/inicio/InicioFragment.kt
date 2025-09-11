@@ -15,7 +15,6 @@ import com.bumptech.glide.Glide
 import com.example.trabajo1.R
 import com.example.trabajo1.databinding.ItemNoticiaBinding
 
-
 class InicioFragment : Fragment() {
 
     private var _binding: FragmentInicioBinding? = null
@@ -23,13 +22,15 @@ class InicioFragment : Fragment() {
 
     private val inicioViewModel: InicioViewModel by viewModels()
 
+    private lateinit var noticiasAdapter: NoticiasAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentInicioBinding.inflate(inflater, container, false)
 
-        // Observar dólar
+        // --- Dólar ---
         inicioViewModel.dolar.observe(viewLifecycleOwner) { dolar ->
             dolar?.let {
                 binding.txtDolarCompra.text = "Compra: ${it.compra}"
@@ -37,22 +38,26 @@ class InicioFragment : Fragment() {
                 binding.txtDolarFecha.text = "Actualizado: ${it.fechaActualizacion}"
             }
         }
-
-        // Llamar API
         inicioViewModel.cargarDolarOficial()
 
-
-        //Codigo para las noticias noticias:
-        // Inicializar RecyclerView
+        // --- Noticias ---
         binding.recyclerNoticias.layoutManager = LinearLayoutManager(requireContext())
+        noticiasAdapter = NoticiasAdapter(emptyList())
+        binding.recyclerNoticias.adapter = noticiasAdapter
 
-        // Observar noticias
         inicioViewModel.noticias.observe(viewLifecycleOwner) { lista ->
-            binding.recyclerNoticias.adapter = NoticiasAdapter(lista)
+            noticiasAdapter.updateData(lista)
+            binding.swipeRefreshLayoutNoticias.isRefreshing = false
         }
 
-        // Cargar noticias
-        inicioViewModel.cargarNoticias()
+        // Primera carga de datos (solo si aún no hay noticias)
+        inicioViewModel.cargarNoticias(force = false)
+
+        // Swipe-to-refresh sí fuerza recarga
+        binding.swipeRefreshLayoutNoticias.setOnRefreshListener {
+            inicioViewModel.cargarNoticias(force = true)
+        }
+
 
         return binding.root
     }
@@ -63,7 +68,7 @@ class InicioFragment : Fragment() {
     }
 
     // --- Adapter interno ---
-    inner class NoticiasAdapter(private val noticias: List<InicioViewModel.Noticia>) :
+    inner class NoticiasAdapter(private var noticias: List<InicioViewModel.Noticia>) :
         RecyclerView.Adapter<NoticiasAdapter.NoticiaViewHolder>() {
 
         inner class NoticiaViewHolder(val binding: ItemNoticiaBinding) :
@@ -91,7 +96,10 @@ class InicioFragment : Fragment() {
                 holder.binding.root.context.startActivity(intent)
             }
         }
+
+        fun updateData(newList: List<InicioViewModel.Noticia>) {
+            noticias = newList
+            notifyDataSetChanged()
+        }
     }
 }
-
-

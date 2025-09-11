@@ -13,7 +13,7 @@ import retrofit2.http.Query
 
 class InicioViewModel : ViewModel() {
 
-    //codigo para el widget del dólar
+    // --- Dólar ---
     data class Dolar(
         val moneda: String,
         val casa: String,
@@ -27,7 +27,7 @@ class InicioViewModel : ViewModel() {
     val dolar: LiveData<Dolar> get() = _dolar
 
     private val retrofit = Retrofit.Builder()
-        .baseUrl("https://dolarapi.com/v1/dolares/") // baseUrl termina en /
+        .baseUrl("https://dolarapi.com/v1/dolares/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
@@ -46,12 +46,12 @@ class InicioViewModel : ViewModel() {
                 }
             }
             override fun onFailure(call: Call<Dolar>, t: Throwable) {
-                // Manejar error (puedes loguear o mostrar valor default)
+                // Manejo simple: no hace nada en error
             }
         })
     }
 
-    //codigo noticias:
+    // --- Noticias ---
     data class Noticia(
         val id: String,
         val title: String,
@@ -68,8 +68,14 @@ class InicioViewModel : ViewModel() {
         val name: String,
         val url: String?
     )
+
+    data class GNewsResponse(
+        val totalArticles: Int,
+        val articles: List<Noticia>
+    )
+
     private val retrofitGNews = Retrofit.Builder()
-        .baseUrl("https://gnews.io/api/v4/") // Base URL de GNews
+        .baseUrl("https://gnews.io/api/v4/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
@@ -78,23 +84,20 @@ class InicioViewModel : ViewModel() {
         fun getTopHeadlines(
             @Query("topic") topic: String = "technology",
             @Query("country") country: String = "ar",
-            @Query("lang") lang: String = "es",        // Noticias en español
+            @Query("lang") lang: String = "es",
             @Query("token") apiKey: String = "231029e077f84902fc438c5a2613b89c"
         ): Call<GNewsResponse>
     }
-
-
-    data class GNewsResponse(
-        val totalArticles: Int,
-        val articles: List<Noticia>
-    )
 
     private val gNewsApi = retrofitGNews.create(GNewsApiService::class.java)
 
     private val _noticias = MutableLiveData<List<Noticia>>()
     val noticias: LiveData<List<Noticia>> get() = _noticias
 
-    fun cargarNoticias() {
+    fun cargarNoticias(force: Boolean = false) {
+        // ✅ Solo cargar si no hay noticias, o si el usuario forzó con swipe-to-refresh
+        if (!force && !_noticias.value.isNullOrEmpty()) return
+
         gNewsApi.getTopHeadlines().enqueue(object : Callback<GNewsResponse> {
             override fun onResponse(call: Call<GNewsResponse>, response: Response<GNewsResponse>) {
                 if (response.isSuccessful) {
@@ -107,4 +110,5 @@ class InicioViewModel : ViewModel() {
             }
         })
     }
+
 }
