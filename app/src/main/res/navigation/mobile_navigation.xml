@@ -3,9 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_inicio"
-    app:navGraph="@navigation/mobile_navigation"
-    >
+    app:startDestination="@+id/navigation_inicio">
 
     <fragment
         android:id="@+id/navigation_inicio"
@@ -26,5 +24,16 @@
     <fragment
         android:id="@+id/navigation_mas"
         android:name="com.example.trabajo1.ui.mas.MasFragment"
-        tools:layout="@layout/fragment_mas" />
+        tools:layout="@layout/fragment_mas">
+
+        <!-- Acción para ir desde MasFragment a VoiceRecorderFragment -->
+        <action
+            android:id="@+id/action_masFragment_to_voiceRecorderFragment"
+            app:destination="@id/voiceRecorderFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/voiceRecorderFragment"
+        android:name="com.example.trabajo1.ui.voice_recorder.VoiceRecorderFragment"
+        tools:layout="@layout/fragment_voice_recorder" />
 </navigation>

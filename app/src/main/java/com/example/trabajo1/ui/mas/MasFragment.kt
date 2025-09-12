@@ -1,5 +1,6 @@
 package com.example.trabajo1.ui.mas
 
+import com.example.trabajo1.R
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.trabajo1.databinding.FragmentMasBinding
 
 class MasFragment : Fragment() {
@@ -22,16 +24,21 @@ class MasFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val masViewModel =
+        val voiceRecorderViewModel =
             ViewModelProvider(this).get(MasViewModel::class.java)
 
         _binding = FragmentMasBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val textView: TextView = binding.textMas
-        masViewModel.text.observe(viewLifecycleOwner) {
+        voiceRecorderViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
+
+        binding.btnOpenRecorder.setOnClickListener {
+            findNavController().navigate(R.id.action_masFragment_to_voiceRecorderFragment)
+        }
+
         return root
     }
 
