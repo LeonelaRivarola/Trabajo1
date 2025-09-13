@@ -15,4 +15,6 @@
     <string name="dolar_compra">Compra: %s</string>
     <string name="dolar_venta">Venta: %s</string>
     <string name="dolar_actualizado">Actualizado por última vez: %s</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

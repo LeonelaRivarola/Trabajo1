@@ -3,37 +3,59 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_inicio">
+    app:startDestination="@id/navigation_inicio">
 
+    <!-- Inicio -->
     <fragment
         android:id="@+id/navigation_inicio"
         android:name="com.example.trabajo1.ui.inicio.InicioFragment"
+        android:label="Inicio"
         tools:layout="@layout/fragment_inicio" />
 
+    <!-- Chat -->
     <fragment
         android:id="@+id/navigation_chat"
         android:name="com.example.trabajo1.ui.chat.ChatFragment"
-        android:label="@string/title_chat"
+        android:label="Chat"
         tools:layout="@layout/fragment_chat" />
 
+    <!-- Consejo -->
     <fragment
         android:id="@+id/navigation_consejo"
         android:name="com.example.trabajo1.ui.consejo.ConsejoFragment"
+        android:label="Consejo"
         tools:layout="@layout/fragment_consejo" />
 
+    <!-- Más (solo una definición) -->
     <fragment
         android:id="@+id/navigation_mas"
         android:name="com.example.trabajo1.ui.mas.MasFragment"
+        android:label="Más"
         tools:layout="@layout/fragment_mas">
 
-        <!-- Acción para ir desde MasFragment a VoiceRecorderFragment -->
+        <!-- Acción hacia VoiceRecorder -->
         <action
             android:id="@+id/action_masFragment_to_voiceRecorderFragment"
             app:destination="@id/voiceRecorderFragment" />
+
+        <!-- Acción hacia VideoRecorder -->
+        <action
+            android:id="@+id/action_masFragment_to_videoRecorderFragment"
+            app:destination="@id/videoRecorderFragment" />
     </fragment>
 
+    <!-- Grabadora de voz -->
     <fragment
         android:id="@+id/voiceRecorderFragment"
         android:name="com.example.trabajo1.ui.voice_recorder.VoiceRecorderFragment"
+        android:label="Grabadora de voz"
         tools:layout="@layout/fragment_voice_recorder" />
+
+    <!-- Grabadora de video -->
+    <fragment
+        android:id="@+id/videoRecorderFragment"
+        android:name="com.example.trabajo1.ui.video_recorder.VideoRecorderFragment"
+        android:label="Grabadora de video"
+        tools:layout="@layout/fragment_video_recorder" />
+
 </navigation>

@@ -39,6 +39,10 @@ class MasFragment : Fragment() {
             findNavController().navigate(R.id.action_masFragment_to_voiceRecorderFragment)
         }
 
+        binding.btnOpenVideoRecorder.setOnClickListener {
+            findNavController().navigate(R.id.action_masFragment_to_videoRecorderFragment)
+        }
+
         return root
     }
 
