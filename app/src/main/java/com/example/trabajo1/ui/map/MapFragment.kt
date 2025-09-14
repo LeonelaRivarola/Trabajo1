@@ -16,6 +16,7 @@ import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -32,11 +33,16 @@ import kotlin.collections.isNotEmpty
 //logica del mapa
 
 class MapFragment : Fragment(), OnMapReadyCallback {
+    private lateinit var viewModel: MapViewModel
+
     private lateinit var mMap: GoogleMap //guarda referencia al mapa
     private lateinit var fusedLocationClient: FusedLocationProviderClient //es quien me da la ubicacion actual del disp
     private lateinit var txtDireccion: TextView //donde quiero que se vea la direccion
 
     private lateinit var mapFragment: SupportMapFragment
+
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,13 +55,24 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        txtDireccion = view.findViewById(R.id.txtDireccion)
-        fusedLocationClient =
-            LocationServices.getFusedLocationProviderClient(requireContext()) //usa la api de google aca, para darlemejor ubicacion disponible
+        // Inicializar ViewModel
+        viewModel = ViewModelProvider(this).get(MapViewModel::class.java)
 
-        mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+        // Inicializar TextView de dirección
+        txtDireccion = view.findViewById(R.id.txtDireccion)
+        viewModel.direccion.observe(viewLifecycleOwner) { direccion ->
+            txtDireccion.text = direccion
+        }
+
+        // Inicializar FusedLocationProviderClient
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+        // Inicializar el SupportMapFragment
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+        mapFragment?.getMapAsync(this)
     }
+
+
 
     //lo hice para cargar el mapa y que se guarde en mMap y pedir los permisos de ubicacion para usarlo
     override fun onMapReady(googleMap: GoogleMap) {

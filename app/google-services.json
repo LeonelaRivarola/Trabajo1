@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "167411435556",
-    "project_id": "pruebaloam",
-    "storage_bucket": "pruebaloam.firebasestorage.app"
+    "project_number": "179122678625",
+    "project_id": "trabajo1-4f38d",
+    "storage_bucket": "trabajo1-4f38d.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:167411435556:android:78f1b55a11f908e49cf0b1",
+        "mobilesdk_app_id": "1:179122678625:android:0ab8395b2ae1e579f93320",
         "android_client_info": {
           "package_name": "com.example.trabajo1"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCMYGE0U7BX_WLO1tOyZEad0zxZWutU1yA"
+          "current_key": "AIzaSyCkFv4NqwHgl5QR-V0spu8Layqwrk5pMbc"
         }
       ],
       "services": {

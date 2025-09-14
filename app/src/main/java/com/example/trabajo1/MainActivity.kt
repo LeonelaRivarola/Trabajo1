@@ -13,16 +13,19 @@ import android.widget.Toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.trabajo1.databinding.ActivityMainBinding
+//mapa
 import com.example.trabajo1.ui.map.MapFragment
+//
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import com.google.firebase.database.*
+import com.google.firebase.database.FirebaseDatabase
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,6 +42,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true)
 
         //Porque este cambio buscar
         //setContentView(R.layout.activity_main)
@@ -106,17 +111,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
-
-
-
-
         //----------Mapa----------
-        if(savedInstanceState == null){
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container, MapFragment())
-                .commitNow()
-        }
+//        if(savedInstanceState == null){
+//            supportFragmentManager.beginTransaction()
+//                .replace(R.id.container, MapFragment())
+//                .commitNow()
+//        }
     }
 
 

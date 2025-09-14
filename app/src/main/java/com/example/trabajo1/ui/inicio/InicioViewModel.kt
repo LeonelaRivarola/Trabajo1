@@ -13,7 +13,7 @@ import retrofit2.http.Query
 
 class InicioViewModel : ViewModel() {
 
-    //Dolar
+    // --- Dólar ---
     data class Dolar(
         val moneda: String,
         val casa: String,
@@ -22,22 +22,23 @@ class InicioViewModel : ViewModel() {
         val venta: Double,
         val fechaActualizacion: String
     )
+
     private val _dolar = MutableLiveData<Dolar>()
     val dolar: LiveData<Dolar> get() = _dolar
 
     private val retrofit = Retrofit.Builder()
-        .baseUrl("https://www.dolarapi.com/v1/dolares/")//Esto aconsejo el profe ("https://www.dolarsi.com/")
+        .baseUrl("https://dolarapi.com/v1/dolares/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    interface DolarApiService{
+    interface DolarApiService {
         @GET("oficial")
         fun getDolarOficial(): Call<Dolar>
     }
 
     private val api = retrofit.create(DolarApiService::class.java)
 
-    fun cargarDolarOficial(){
+    fun cargarDolarOficial() {
         api.getDolarOficial().enqueue(object : Callback<Dolar> {
             override fun onResponse(call: Call<Dolar>, response: Response<Dolar>) {
                 if (response.isSuccessful) {
@@ -45,24 +46,25 @@ class InicioViewModel : ViewModel() {
                 }
             }
             override fun onFailure(call: Call<Dolar>, t: Throwable) {
-                //Agregar algo en error, para tener un buen manejo de errores
+                // Manejo simple: no hace nada en error
             }
         })
     }
 
-    //Noticias
+    // --- Noticias ---
     data class Noticia(
-        val id: String, //id string? mejor int
+        val id: String,
         val title: String,
-        val description: String,
-        val content: String,
+        val description: String?,
+        val content: String?,
         val url: String,
-        val image: String,
+        val image: String?,
         val publishedAt: String,
         val source: Source
     )
+
     data class Source(
-        val id: String,
+        val id: String?,
         val name: String,
         val url: String?
     )
@@ -77,7 +79,7 @@ class InicioViewModel : ViewModel() {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    interface GnewsApiService{
+    interface GNewsApiService {
         @GET("top-headlines")
         fun getTopHeadlines(
             @Query("topic") topic: String = "technology",
@@ -87,25 +89,26 @@ class InicioViewModel : ViewModel() {
         ): Call<GNewsResponse>
     }
 
-    private val gNewsApi = retrofitGNews.create(GnewsApiService::class.java)
+    private val gNewsApi = retrofitGNews.create(GNewsApiService::class.java)
 
     private val _noticias = MutableLiveData<List<Noticia>>()
     val noticias: LiveData<List<Noticia>> get() = _noticias
 
     fun cargarNoticias(force: Boolean = false) {
-        //Solo cargar su no hay noticias, o si el usurio forzo con swipe-to-refresh
-        if(!force && !_noticias.value.isNullOrEmpty()) return
+        // ✅ Solo cargar si no hay noticias, o si el usuario forzó con swipe-to-refresh
+        if (!force && !_noticias.value.isNullOrEmpty()) return
 
         gNewsApi.getTopHeadlines().enqueue(object : Callback<GNewsResponse> {
             override fun onResponse(call: Call<GNewsResponse>, response: Response<GNewsResponse>) {
-                if(response.isSuccessful){
+                if (response.isSuccessful) {
                     _noticias.value = response.body()?.articles ?: emptyList()
                 }
             }
 
             override fun onFailure(call: Call<GNewsResponse>, t: Throwable) {
-                _noticias.value = emptyList() //o manejar errores
+                _noticias.value = emptyList() // o manejar error
             }
         })
     }
+
 }
