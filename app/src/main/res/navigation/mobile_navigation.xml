@@ -24,7 +24,9 @@
 
     <fragment
         android:id="@+id/navigation_mas"
-        android:name="com.example.trabajo1.ui.mas.MasFragment"
-        tools:layout="@layout/fragment_map" /><!--tools:layout="@layout/fragment_mas" />-->
+        android:name="com.example.trabajo1.ui.map.MapFragment"
+        tools:layout="@layout/fragment_map" />
+        <!--android:name="com.example.trabajo1.ui.mas.MasFragment"-->
+        <!--tools:layout="@layout/fragment_mas" />-->
 
 </navigation>

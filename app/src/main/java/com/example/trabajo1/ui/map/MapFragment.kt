@@ -39,7 +39,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var fusedLocationClient: FusedLocationProviderClient //es quien me da la ubicacion actual del disp
     private lateinit var txtDireccion: TextView //donde quiero que se vea la direccion
 
-    private lateinit var mapFragment: SupportMapFragment
 
 
 
@@ -80,9 +79,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         pedirPermisos()
         //boton de "mi ubicacion"
         mMap.uiSettings.isMyLocationButtonEnabled = true
-
-        //para acceder al boton de "mi ubicacion"
-        val locationButton = (mapFragment.view?.findViewById<View>(Integer.parseInt("1"))?.parent as View).findViewById<View>(Integer.parseInt("2"))
     }
 
     //si los permisos se dieron, se muestra la ubicacion sino se vuelven a pedir los permisos
