@@ -31,6 +31,7 @@ import java.util.concurrent.Executors
 class VideoRecorderFragment : Fragment() {
 
     private lateinit var btnRecord: Button
+    private lateinit var btnPause: Button
     private lateinit var btnSwitch: ImageButton
     private lateinit var btnFlash: ImageButton
     private lateinit var btnBack: ImageButton
@@ -43,7 +44,7 @@ class VideoRecorderFragment : Fragment() {
 
     private val viewModel: VideoRecorderViewModel by viewModels()
 
-    // 👉 Gestión de permisos
+    // Gestión de permisos
     private val requiredPermissions = arrayOf(
         Manifest.permission.CAMERA,
         Manifest.permission.RECORD_AUDIO
@@ -68,11 +69,15 @@ class VideoRecorderFragment : Fragment() {
 
         previewView = root.findViewById(R.id.previewView)
         btnRecord = root.findViewById(R.id.btnRecord)
+        btnPause = root.findViewById(R.id.btnPause)
         btnSwitch = root.findViewById(R.id.btnSwitchCamera)
         btnFlash = root.findViewById(R.id.btnFlash)
         btnBack = root.findViewById(R.id.btnBack)
 
         cameraExecutor = Executors.newSingleThreadExecutor()
+
+        // Ocultamos el botón de pausar al inicio
+        btnPause.isEnabled = false
 
         // ✅ Comprobar permisos antes de iniciar la cámara
         if (allPermissionsGranted()) {
@@ -82,6 +87,7 @@ class VideoRecorderFragment : Fragment() {
         }
 
         btnRecord.setOnClickListener { toggleRecording() }
+        btnPause.setOnClickListener { togglePauseResume() }
         btnSwitch.setOnClickListener { switchCamera() }
         btnFlash.setOnClickListener { toggleFlash() }
         btnBack.setOnClickListener {
@@ -129,6 +135,14 @@ class VideoRecorderFragment : Fragment() {
         }
     }
 
+    private fun togglePauseResume() {
+        if (viewModel.isPaused.value == true) {
+            resumeRecording()
+        } else {
+            pauseRecording()
+        }
+    }
+
     @SuppressLint("MissingPermission")
     private fun startRecording() {
         val videoCapture = this.videoCapture ?: return
@@ -138,7 +152,7 @@ class VideoRecorderFragment : Fragment() {
             return
         }
 
-        // 👉 Usamos MediaStore en lugar de FileOutputOptions
+        // Uso MediaStore para guardar en la galeria del celular
         val contentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, "VIDEO_${System.currentTimeMillis()}")
             put(MediaStore.MediaColumns.MIME_TYPE, "video/mp4")
@@ -160,17 +174,23 @@ class VideoRecorderFragment : Fragment() {
                 when (event) {
                     is VideoRecordEvent.Start -> {
                         viewModel.setRecording(true)
+                        viewModel.setPaused(false)
                         btnRecord.text = "Detener"
+                        btnPause.isEnabled = true
+                        btnPause.text = "Pausar"
                         Toast.makeText(requireContext(), "Grabando...", Toast.LENGTH_SHORT).show()
                     }
                     is VideoRecordEvent.Finalize -> {
                         viewModel.setRecording(false)
+                        viewModel.setPaused(false)
                         btnRecord.text = "Grabar"
+                        btnPause.isEnabled = false
+                        btnPause.text = "Pausar"
 
                         if (event.hasError()) {
                             Toast.makeText(requireContext(), "Error al guardar video", Toast.LENGTH_LONG).show()
                         } else {
-                            Toast.makeText(requireContext(), "Video guardado en galería 🎥", Toast.LENGTH_LONG).show()
+                            Toast.makeText(requireContext(), "Video guardado en galería", Toast.LENGTH_LONG).show()
                         }
                     }
                 }
@@ -180,6 +200,20 @@ class VideoRecorderFragment : Fragment() {
     private fun stopRecording() {
         recording?.stop()
         recording = null
+    }
+
+    private fun pauseRecording() {
+        recording?.pause()
+        viewModel.setPaused(true)
+        btnPause.text = "Reanudar"
+        Toast.makeText(requireContext(), "Grabación en pausa ⏸️", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun resumeRecording() {
+        recording?.resume()
+        viewModel.setPaused(false)
+        btnPause.text = "Pausar"
+        Toast.makeText(requireContext(), "Grabación reanudada ▶️", Toast.LENGTH_SHORT).show()
     }
 
     private fun switchCamera() {
