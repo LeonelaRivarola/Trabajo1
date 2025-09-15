@@ -5,16 +5,16 @@ import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.camera.core.*
+import androidx.camera.core.Camera
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.video.*
 import androidx.core.content.ContextCompat
@@ -22,16 +22,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.trabajo1.R
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class VideoRecorderFragment : Fragment() {
 
-    private lateinit var btnRecord: Button
-    private lateinit var btnPause: Button
+    private lateinit var btnRecord: ImageButton
+    private lateinit var btnPause: ImageButton
     private lateinit var btnSwitch: ImageButton
     private lateinit var btnFlash: ImageButton
     private lateinit var btnBack: ImageButton
@@ -42,9 +39,11 @@ class VideoRecorderFragment : Fragment() {
     private var recording: Recording? = null
     private lateinit var cameraExecutor: ExecutorService
 
+    private var camera: Camera? = null
+    private var isFlashOn = false
+
     private val viewModel: VideoRecorderViewModel by viewModels()
 
-    // Gestión de permisos
     private val requiredPermissions = arrayOf(
         Manifest.permission.CAMERA,
         Manifest.permission.RECORD_AUDIO
@@ -76,10 +75,11 @@ class VideoRecorderFragment : Fragment() {
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
-        // Ocultamos el botón de pausar al inicio
+        // Estado inicial
+        btnRecord.setImageResource(R.drawable.ic_record)
+        btnPause.setImageResource(R.drawable.ic_pause)
         btnPause.isEnabled = false
 
-        // ✅ Comprobar permisos antes de iniciar la cámara
         if (allPermissionsGranted()) {
             startCamera()
         } else {
@@ -118,9 +118,14 @@ class VideoRecorderFragment : Fragment() {
 
             try {
                 cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(
+                camera = cameraProvider.bindToLifecycle(
                     this, cameraSelector, preview, videoCapture
                 )
+
+                isFlashOn = false
+                btnFlash.setImageResource(R.drawable.ic_flash_off)
+                camera?.cameraControl?.enableTorch(false)
+
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -152,12 +157,10 @@ class VideoRecorderFragment : Fragment() {
             return
         }
 
-        // Uso MediaStore para guardar en la galeria del celular
         val contentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, "VIDEO_${System.currentTimeMillis()}")
             put(MediaStore.MediaColumns.MIME_TYPE, "video/mp4")
             put(MediaStore.Video.Media.RELATIVE_PATH, "Movies/MiAppVideos")
-            // 👆 Carpeta visible en galería
         }
 
         val mediaStoreOutput = MediaStoreOutputOptions.Builder(
@@ -175,17 +178,22 @@ class VideoRecorderFragment : Fragment() {
                     is VideoRecordEvent.Start -> {
                         viewModel.setRecording(true)
                         viewModel.setPaused(false)
-                        btnRecord.text = "Detener"
+
+                        // Cambiamos botones al iniciar grabación
+                        btnRecord.setImageResource(R.drawable.ic_stop)
+                        btnPause.setImageResource(R.drawable.ic_pause)
                         btnPause.isEnabled = true
-                        btnPause.text = "Pausar"
+
                         Toast.makeText(requireContext(), "Grabando...", Toast.LENGTH_SHORT).show()
                     }
                     is VideoRecordEvent.Finalize -> {
                         viewModel.setRecording(false)
                         viewModel.setPaused(false)
-                        btnRecord.text = "Grabar"
+
+                        // Restauramos estado inicial
+                        btnRecord.setImageResource(R.drawable.ic_record)
+                        btnPause.setImageResource(R.drawable.ic_pause)
                         btnPause.isEnabled = false
-                        btnPause.text = "Pausar"
 
                         if (event.hasError()) {
                             Toast.makeText(requireContext(), "Error al guardar video", Toast.LENGTH_LONG).show()
@@ -205,14 +213,20 @@ class VideoRecorderFragment : Fragment() {
     private fun pauseRecording() {
         recording?.pause()
         viewModel.setPaused(true)
-        btnPause.text = "Reanudar"
+
+        // Cambiamos icono de pausa a reanudar
+        btnPause.setImageResource(R.drawable.ic_resume)
+
         Toast.makeText(requireContext(), "Grabación en pausa ⏸️", Toast.LENGTH_SHORT).show()
     }
 
     private fun resumeRecording() {
         recording?.resume()
         viewModel.setPaused(false)
-        btnPause.text = "Pausar"
+
+        // Cambiamos icono de reanudar a pausa
+        btnPause.setImageResource(R.drawable.ic_pause)
+
         Toast.makeText(requireContext(), "Grabación reanudada ▶️", Toast.LENGTH_SHORT).show()
     }
 
@@ -226,7 +240,16 @@ class VideoRecorderFragment : Fragment() {
     }
 
     private fun toggleFlash() {
-        Toast.makeText(requireContext(), "Flash toggle (pendiente)", Toast.LENGTH_SHORT).show()
+        val cam = camera ?: return
+
+        isFlashOn = !isFlashOn
+        cam.cameraControl.enableTorch(isFlashOn)
+
+        if (isFlashOn) {
+            btnFlash.setImageResource(R.drawable.ic_flash_on)
+        } else {
+            btnFlash.setImageResource(R.drawable.ic_flash_off)
+        }
     }
 
     private fun allPermissionsGranted() = requiredPermissions.all {
