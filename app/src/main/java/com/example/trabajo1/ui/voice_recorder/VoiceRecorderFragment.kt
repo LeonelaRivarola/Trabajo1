@@ -6,16 +6,18 @@ import android.media.MediaRecorder
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
+import android.widget.Chronometer
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.example.trabajo1.R
 import java.io.File
 import java.text.SimpleDateFormat
@@ -23,9 +25,14 @@ import java.util.*
 
 class VoiceRecorderFragment : Fragment() {
 
-    private lateinit var btnRecord: Button
-    private lateinit var btnStop: Button
-    private lateinit var tvTimer: TextView
+    private lateinit var btnRecord: ImageButton
+    private lateinit var btnStop: ImageButton
+    private lateinit var btnPause: ImageButton
+    private lateinit var btnResume: ImageButton
+    private lateinit var btnBack: ImageButton
+
+    private lateinit var tvTimer: Chronometer
+    private var pauseOffset: Long = 0
 
     private var mediaRecorder: MediaRecorder? = null
     private var outputFile: String = ""
@@ -40,43 +47,53 @@ class VoiceRecorderFragment : Fragment() {
 
         btnRecord = root.findViewById(R.id.btnRecord)
         btnStop = root.findViewById(R.id.btnStop)
+        btnPause = root.findViewById(R.id.btnPause)
+        btnResume = root.findViewById(R.id.btnResume)
+        btnBack = root.findViewById(R.id.btnBack)
         tvTimer = root.findViewById(R.id.tvTimer)
 
-        btnRecord.setOnClickListener { toggleRecording() }
+        // Estado inicial
+        setInitialUI()
+
+        // Eventos de botones
+        btnRecord.setOnClickListener { startRecording() }
         btnStop.setOnClickListener { stopRecording() }
-
-        // Observamos cambios en el ViewModel
-        viewModel.isRecording.observe(viewLifecycleOwner) { recording ->
-            btnRecord.text = if (recording) "Pausar" else "Grabar"
-            btnStop.isEnabled = recording
-        }
-
-        viewModel.recordingTime.observe(viewLifecycleOwner) { time ->
-            tvTimer.text = time
-        }
+        btnPause.setOnClickListener { pauseRecording() }
+        btnResume.setOnClickListener { resumeRecording() }
+        btnBack.setOnClickListener { stopAndGoBack() }
 
         return root
     }
 
-    private fun toggleRecording() {
-        if (viewModel.isRecording.value == true) {
-            stopRecording()
-        } else {
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO)
-                != PackageManager.PERMISSION_GRANTED
-            ) {
-                ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.RECORD_AUDIO), 200)
-            } else {
-                startRecording()
-            }
-        }
+    private fun setInitialUI() {
+        btnRecord.visibility = View.VISIBLE
+        btnRecord.isEnabled = true
+
+        btnStop.visibility = View.GONE
+        btnStop.isEnabled = false
+
+        btnPause.visibility = View.GONE
+        btnPause.isEnabled = false
+
+        btnResume.visibility = View.GONE
+        btnResume.isEnabled = false
     }
 
     private fun startRecording() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.RECORD_AUDIO),
+                200
+            )
+            return
+        }
+
         val musicDir = requireContext().getExternalFilesDir(Environment.DIRECTORY_MUSIC)
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val audioFile = File(musicDir, "AUDIO_$timeStamp.3gp")
-
         outputFile = audioFile.absolutePath
 
         mediaRecorder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -96,6 +113,73 @@ class VoiceRecorderFragment : Fragment() {
                 start()
                 Toast.makeText(requireContext(), "Grabando...", Toast.LENGTH_SHORT).show()
                 viewModel.setRecording(true)
+
+                // Cronómetro
+                tvTimer.base = SystemClock.elapsedRealtime() - pauseOffset
+                tvTimer.start()
+
+                // UI
+                btnRecord.visibility = View.GONE
+                btnRecord.isEnabled = false
+
+                btnStop.visibility = View.VISIBLE
+                btnStop.isEnabled = true
+
+                btnPause.visibility = View.VISIBLE
+                btnPause.isEnabled = true
+
+                btnResume.visibility = View.GONE
+                btnResume.isEnabled = false
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun pauseRecording() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            try {
+                mediaRecorder?.pause()
+                Toast.makeText(requireContext(), "Grabación en pausa", Toast.LENGTH_SHORT).show()
+
+                // Cronómetro
+                tvTimer.stop()
+                pauseOffset = SystemClock.elapsedRealtime() - tvTimer.base
+
+                // UI
+                btnPause.visibility = View.GONE
+                btnPause.isEnabled = false
+
+                btnResume.visibility = View.VISIBLE
+                btnResume.isEnabled = true
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        } else {
+            Toast.makeText(
+                requireContext(),
+                "Pausa no soportada en esta versión",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    private fun resumeRecording() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            try {
+                mediaRecorder?.resume()
+                Toast.makeText(requireContext(), "Grabación reanudada", Toast.LENGTH_SHORT).show()
+
+                // Cronómetro
+                tvTimer.base = SystemClock.elapsedRealtime() - pauseOffset
+                tvTimer.start()
+
+                // UI
+                btnResume.visibility = View.GONE
+                btnResume.isEnabled = false
+
+                btnPause.visibility = View.VISIBLE
+                btnPause.isEnabled = true
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -103,12 +187,36 @@ class VoiceRecorderFragment : Fragment() {
     }
 
     private fun stopRecording() {
-        mediaRecorder?.apply {
-            stop()
-            release()
+        try {
+            mediaRecorder?.apply {
+                stop()
+                release()
+            }
+            mediaRecorder = null
+            Toast.makeText(
+                requireContext(),
+                "Grabación guardada en: $outputFile",
+                Toast.LENGTH_LONG
+            ).show()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        mediaRecorder = null
-        Toast.makeText(requireContext(), "Grabación guardada en: $outputFile", Toast.LENGTH_LONG).show()
+
+        // Cronómetro
+        tvTimer.stop()
+        tvTimer.base = SystemClock.elapsedRealtime()
+        pauseOffset = 0
+
+        // Reset UI
+        setInitialUI()
+
         viewModel.setRecording(false)
+    }
+
+    private fun stopAndGoBack() {
+        if (viewModel.isRecording.value == true) {
+            stopRecording()
+        }
+        findNavController().popBackStack()
     }
 }

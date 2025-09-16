@@ -22,4 +22,6 @@
     <string name="back">Volver</string>
     <string name="record">Record</string>
     <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
+    <string name="stop">Stop</string>
 </resources>
