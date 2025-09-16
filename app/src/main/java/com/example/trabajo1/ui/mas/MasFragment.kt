@@ -7,7 +7,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.trabajo1.databinding.FragmentMasBinding
+import com.example.trabajo1.R
+
 
 class MasFragment : Fragment() {
 
@@ -22,17 +25,27 @@ class MasFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val masViewModel =
-            ViewModelProvider(this).get(MasViewModel::class.java)
-
+//        val masViewModel = ViewModelProvider(this).get(MasViewModel::class.java)
         _binding = FragmentMasBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+//        val root: View = binding.root
 
-        val textView: TextView = binding.textMas
-        masViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+        //observa el texto de viewmodel
+//        masViewModel.text.observe(viewLifecycleOwner) { text ->
+//            binding.textMas.text = text
+//        }
+
+
+        //conf de los botones
+        binding.btnMapa.setOnClickListener {
+            //navega al mapfragment
+            findNavController().navigate(R.id.action_navigation_mas_to_mapFragment)
         }
-        return root
+
+//        binding.btnGrabadora.setOnClickListener {
+//            binding.textMas.text = "Grabadora"
+//        }
+
+        return binding.root
     }
 
     override fun onDestroyView() {

@@ -15,4 +15,5 @@
     <string name="dolar_compra">Compra: %s</string>
     <string name="dolar_venta">Venta: %s</string>
     <string name="dolar_actualizado">Actualizado por última vez: %s</string>
+    <string name="google_maps_key">AIzaSyBBsZKMWcUm2QQ4XOhPCvTv9uwIYTXVOzQ</string>
 </resources>

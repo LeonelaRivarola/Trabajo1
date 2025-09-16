@@ -53,6 +53,7 @@ dependencies {
     //mapa
     implementation(libs.play.services.location)
     implementation(libs.play.services.maps)
+    implementation("com.google.android.libraries.places:places:3.3.0")
     //navegacion
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")

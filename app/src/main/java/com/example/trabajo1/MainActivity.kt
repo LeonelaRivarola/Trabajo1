@@ -108,15 +108,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_chat -> getString(R.string.title_chat)
                 R.id.navigation_consejo -> getString(R.string.title_consejo)
                 R.id.navigation_mas -> getString(R.string.title_mas)
-            } }
-//               if(savedInstanceState == null){
-//            supportFragmentManager.beginTransaction()
-//                .replace(R.id.container, MapFragment())
-//                .commitNow()
-//        }
-
-        //----------Mapa----------
-//
+            }
+        }
     }
 
 
