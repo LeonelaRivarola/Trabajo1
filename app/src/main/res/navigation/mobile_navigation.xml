@@ -3,23 +3,59 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_inicio"
+    app:navGraph="@navigation/mobile_navigation"
+    >
 
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.example.trabajo1.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/navigation_inicio"
+        android:name="com.example.trabajo1.ui.inicio.InicioFragment"
+        tools:layout="@layout/fragment_inicio" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.example.trabajo1.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_chat"
+        android:name="com.example.trabajo1.ui.chat.ChatFragment"
+        tools:layout="@layout/fragment_chat" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.example.trabajo1.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_consejo"
+        android:name="com.example.trabajo1.ui.consejo.ConsejoFragment"
+        tools:layout="@layout/fragment_consejo" />
+
+    <fragment
+        android:id="@+id/navigation_mas"
+        android:name="com.example.trabajo1.ui.mas.MasFragment"
+        tools:layout="@layout/fragment_mas" >
+
+        <action
+            android:id="@+id/action_navigation_mas_to_mapFragment"
+            app:destination="@id/mapFragment"/>
+        <action
+            android:id="@+id/action_navigation_mas_to_videoFragment"
+            app:destination="@id/videoFragment"/>
+        <action
+            android:id="@+id/action_navigation_mas_to_voiceFragment"
+            app:destination="@id/voiceFragment"/>
+        <action
+            android:id="@+id/action_navigation_mas_to_configFragment"
+            app:destination="@id/configFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/mapFragment"
+            android:name="com.example.trabajo1.ui.map.MapFragment"
+            tools:layout="@layout/fragment_map" />
+    <fragment
+        android:id="@+id/videoFragment"
+        android:name="com.example.trabajo1.ui.video.VideoFragment"
+        tools:layout="@layout/fragment_video" />
+    <fragment
+        android:id="@+id/voiceFragment"
+        android:name="com.example.trabajo1.ui.voice.VoiceFragment"
+        tools:layout="@layout/fragment_voice" />
+    <fragment
+        android:id="@+id/configFragment"
+        android:name="com.example.trabajo1.ui.config.ConfigFragment"
+        tools:layout="@layout/fragment_config" />
+
 </navigation>

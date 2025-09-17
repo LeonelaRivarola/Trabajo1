@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Barra superior personalizada -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/customToolbar"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:background="@color/material_dynamic_neutral30"
+        android:paddingTop="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_flecha_volver_24dp">
+
+        <!-- Contenedor interno de la barra -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="30dp">
+
+            <!-- Hora -->
+
+            <TextView
+                android:id="@+id/txtHora"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/title_hora"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+
+            <!-- Texto del fragment -->
+            <TextView
+                android:id="@+id/txtFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="@string/title_inicio"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+
+            <!-- Espaciador flexible -->
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <!-- Porcentaje batería -->
+            <TextView
+                android:id="@+id/txtBatteryPercentage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_porcentaje_bateria"
+                android:textColor="@android:color/white" />
+
+            <!-- Icono batería -->
+            <ImageButton
+                android:id="@+id/iconBattery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/linterna"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:src="@drawable/ic_bateria_24dp" />
+
+            <!-- Botón linterna -->
+            <ImageButton
+                android:id="@+id/btnLinterna"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/linterna"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:src="@drawable/ic_linterna_apagada" />
+        </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
+</androidx.constraintlayout.widget.ConstraintLayout>
