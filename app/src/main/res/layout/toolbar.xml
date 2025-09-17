@@ -65,8 +65,6 @@
                 android:textColor="@android:color/white" />
 
             <!-- Icono batería -->
-
-            <!-- Botón linterna -->
             <ImageButton
                 android:id="@+id/iconBattery"
                 android:layout_width="wrap_content"
@@ -77,6 +75,7 @@
                 android:minHeight="48dp"
                 android:src="@drawable/ic_bateria_24dp" />
 
+            <!-- Botón linterna -->
             <ImageButton
                 android:id="@+id/btnLinterna"
                 android:layout_width="wrap_content"
@@ -87,19 +86,6 @@
                 android:minWidth="48dp"
                 android:minHeight="48dp"
                 android:src="@drawable/ic_linterna_apagada" />
-
-            <!-- Botón configuración -->
-            <ImageButton
-                android:id="@+id/btnSettings"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/configuracion"
-                android:minWidth="48dp"
-                android:minHeight="48dp"
-                android:src="@drawable/ic_configuraciones_24dp" />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <!-- Botón Volver (arriba izquierda) -->
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/back"
+        android:src="@drawable/ic_flecha_volver_24dp"
+        app:tint="@android:color/white" />
+
+    <!-- Cronómetro centrado en el medio -->
+    <Chronometer
+        android:id="@+id/tvTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="00:00"
+        android:textSize="36sp"
+        android:textColor="@android:color/white" />
+
+    <!-- Controles Pausa / Reanudar / Stop -->
+    <LinearLayout
+        android:id="@+id/layoutControls"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_below="@id/tvTimer"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp">
+
+        <ImageButton
+            android:id="@+id/btnPause"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/ic_pause"
+            android:contentDescription="@string/pause"
+            android:background="@null"
+            android:enabled="false"
+            android:visibility="gone"
+            app:tint="@android:color/white" />
+
+        <ImageButton
+            android:id="@+id/btnResume"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/ic_resume"
+            android:contentDescription="@string/resume"
+            android:background="@null"
+            android:visibility="gone"
+            app:tint="@android:color/white" />
+
+        <ImageButton
+            android:id="@+id/btnStop"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/ic_stop"
+            android:contentDescription="@string/stop"
+            android:background="@null"
+            android:visibility="gone"
+            app:tint="@android:color/white" />
+
+    </LinearLayout>
+
+    <!-- Botón Grabar -->
+    <ImageButton
+        android:id="@+id/btnRecord"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_below="@id/layoutControls"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/record"
+        android:src="@drawable/ic_record"
+        app:tint="@android:color/white" />
+
+</RelativeLayout>

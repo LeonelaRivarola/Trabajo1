@@ -30,11 +30,32 @@
         <action
             android:id="@+id/action_navigation_mas_to_mapFragment"
             app:destination="@id/mapFragment"/>
+        <action
+            android:id="@+id/action_navigation_mas_to_videoFragment"
+            app:destination="@id/videoFragment"/>
+        <action
+            android:id="@+id/action_navigation_mas_to_voiceFragment"
+            app:destination="@id/voiceFragment"/>
+        <action
+            android:id="@+id/action_navigation_mas_to_configFragment"
+            app:destination="@id/configFragment"/>
     </fragment>
 
     <fragment
         android:id="@+id/mapFragment"
             android:name="com.example.trabajo1.ui.map.MapFragment"
             tools:layout="@layout/fragment_map" />
+    <fragment
+        android:id="@+id/videoFragment"
+        android:name="com.example.trabajo1.ui.video.VideoFragment"
+        tools:layout="@layout/fragment_video" />
+    <fragment
+        android:id="@+id/voiceFragment"
+        android:name="com.example.trabajo1.ui.voice.VoiceFragment"
+        tools:layout="@layout/fragment_voice" />
+    <fragment
+        android:id="@+id/configFragment"
+        android:name="com.example.trabajo1.ui.config.ConfigFragment"
+        tools:layout="@layout/fragment_config" />
 
 </navigation>
