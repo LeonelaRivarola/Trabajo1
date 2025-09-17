@@ -1,20 +1,16 @@
 package com.example.trabajo1.ui.map
+
 import com.example.trabajo1.R
-
-
 import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.PixelCopy.request
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -34,18 +30,21 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
+import com.google.firebase.database.FirebaseDatabase
 
 //logica del mapa
 
 class MapFragment : Fragment(), OnMapReadyCallback {
-    private lateinit var viewModel: MapViewModel
 
     private lateinit var mMap: GoogleMap //guarda referencia al mapa
     private lateinit var fusedLocationClient: FusedLocationProviderClient //es quien me da la ubicacion actual del disp
 //    private lateinit var txtDireccion: TextView //donde quiero que se vea la direccion
     private lateinit var edtDireccion: EditText
     private lateinit var btnBuscar: ImageButton
+    private lateinit var btnGuardar: android.widget.Button
 
+    private var ultimaLatLng: LatLng? = null
+    private var ultimaDireccion: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,6 +59,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         edtDireccion = view.findViewById(R.id.edtDireccion)
         btnBuscar = view.findViewById(R.id.btnBuscarDireccion)
+        btnGuardar = view.findViewById(R.id.btnGuardar)
 
         // Cuando tocan buscar
         btnBuscar.setOnClickListener {
@@ -68,6 +68,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 buscarLugar(query)
             } else {
                 Toast.makeText(requireContext(), "Ingrese una dirección", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Guardar en Firebase cuando aprietan el botón
+        btnGuardar.setOnClickListener {
+            if (ultimaLatLng != null && ultimaDireccion != null) {
+                guardar(ultimaLatLng!!, ultimaDireccion!!)
+            } else {
+                Toast.makeText(requireContext(), "Seleccione una ubicación primero", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -109,7 +118,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
 
                                 // 👇 Actualizar EditText con la dirección encontrada
-                                edtDireccion.setText(place.address ?: place.name)
+                                val direccion = place.address ?: place.name
+                                edtDireccion.setText(direccion)
+                                ultimaDireccion = direccion
+                                ultimaLatLng = latLng
                             }
                         }
                 } else {
@@ -118,55 +130,24 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             }
 
     }
-//    private fun buscarDireccion(direccion: String) {
-//        val geocoder = Geocoder(requireContext(), Locale.getDefault())
-//        try {
-//            //tomar la ubicacion actual como referencia
-//            if(ActivityCompat.checkSelfPermission(
-//                requireContext(),
-//                Manifest.permission.ACCESS_FINE_LOCATION
-//            ) != PackageManager.PERMISSION_GRANTED
-//            ){
-//                return
-//            }
-//
-//            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-//                if (location != null){
-//                    //defino el radio
-//                    val lat = location.latitude
-//                    val lng = location.longitude
-//                    val delta = 0.5 //radio en km
-//
-//                    val direcciones = geocoder.getFromLocationName(
-//                        direccion,
-//                        1,
-//                        lat - delta, lng - delta,
-//                        lat + delta, lng + delta
-//                    )
-//
-//                    if(direcciones != null && direcciones.isNotEmpty()){
-//                        val loc = direcciones[0]
-//                        val latLng = LatLng(loc.latitude, loc.longitude)
-//
-//                        mMap.clear()
-//                        mMap.addMarker(MarkerOptions().position(latLng).title(direccion))
-//                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
-//                    }else{
-//                        Toast.makeText(requireContext(), "No se encontró la dirección", Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//            }
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            Toast.makeText(requireContext(), "Error buscando la dirección", Toast.LENGTH_SHORT).show()
-//        }
-//    }
 
 
     //lo hice para cargar el mapa y que se guarde en mMap y pedir los permisos de ubicacion para usarlo
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap //guarda referencia al mapa
         pedirPermisos()
+
+        //para mover el boton de "mi ubicacion"
+        val mapView =(childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).view
+        mapView?.let {
+            val locationButton = (it.parent as View).findViewById<View>("1".toInt())?.parent
+                ?.let { parent -> (parent as View).findViewById<View>("2".toInt()) }
+            locationButton?.let { btn ->
+                val params = btn.layoutParams as ViewGroup.MarginLayoutParams
+                params.setMargins(0, 220, 30, 0)
+                btn.layoutParams =params
+            }
+        }
 
         //click en el mapa
         mMap.setOnMapClickListener { latLng ->
@@ -177,22 +158,49 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             // Usamos Geocoder para traducir coords -> dirección
             val geocoder = Geocoder(requireContext(), Locale.getDefault())
             val direcciones = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+
             if (direcciones != null && direcciones.isNotEmpty()) {
                 val direccion = direcciones[0].getAddressLine(0)
                 edtDireccion.setText(direccion)
+                ultimaDireccion = direccion
 
                 // 👇 acá podés guardar en Firebase lo que necesites
-                val datos = hashMapOf(
-                    "lat" to latLng.latitude,
-                    "lng" to latLng.longitude,
-                    "direccion" to direccion
-                )
+//                val datos = hashMapOf(
+//                    "lat" to latLng.latitude,
+//                    "lng" to latLng.longitude,
+//                    "direccion" to direccion
+//                )
                 // Firebase.firestore.collection("lugares").add(datos) ...
             } else {
-                edtDireccion.setText("${latLng.latitude}, ${latLng.longitude}")
+                ultimaDireccion = "${latLng.latitude}, ${latLng.longitude}"
+                edtDireccion.setText(ultimaDireccion)
+//                edtDireccion.setText("${latLng.latitude}, ${latLng.longitude}")
             }
+            ultimaLatLng = latLng
         }
     }
+
+    private fun guardar(latLng: LatLng, direccion: String){
+        val database = FirebaseDatabase.getInstance()
+        val ref = database.getReference("lugares")
+
+        val lugarId = ref.push().key
+        val datos = hashMapOf(
+            "lat" to latLng.latitude,
+            "lng" to latLng.longitude,
+            "direccion" to direccion
+        )
+
+        if(lugarId != null){
+            ref.child(lugarId).setValue(datos)
+                .addOnSuccessListener {
+                    Toast.makeText(requireContext(), "Lugar guardado", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(requireContext(), "Error al guardar el lugar", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
 
     //si los permisos se dieron, se muestra la ubicacion sino se vuelven a pedir los permisos
     private fun pedirPermisos() {

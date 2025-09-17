@@ -2,6 +2,7 @@
 <!--Layout específico del fragment de mapa-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -20,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="20dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp">
 
@@ -36,19 +37,29 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="Ingresar dirección"
+                android:inputType="text"
                 android:textColor="#000000"
-                android:textSize="16sp"
-                android:inputType="text" />
+                android:textSize="16sp" />
 
             <ImageButton
                 android:id="@+id/btnBuscarDireccion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_search"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Buscar"
-                android:background="?attr/selectableItemBackgroundBorderless"/>
+                android:src="@android:drawable/ic_menu_search" />
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-
+    <Button
+        android:id="@+id/btnGuardar"
+        android:layout_width="290dp"
+        android:layout_height="57dp"
+        android:text="Guardar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.945" />
 </androidx.constraintlayout.widget.ConstraintLayout>
