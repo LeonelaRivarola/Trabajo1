@@ -37,6 +37,9 @@ class MasFragment : Fragment() {
         binding.btnSettings.setOnClickListener {
             findNavController().navigate(R.id.action_navigation_mas_to_configFragment)
         }
+        binding.btnMedidor.setOnClickListener {
+            findNavController().navigate(R.id.action_navigation_mas_to_medidorFragment)
+        }
 
         return binding.root
     }

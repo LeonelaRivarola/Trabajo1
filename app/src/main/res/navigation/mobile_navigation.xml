@@ -39,6 +39,9 @@
         <action
             android:id="@+id/action_navigation_mas_to_configFragment"
             app:destination="@id/configFragment"/>
+        <action
+            android:id="@+id/action_navigation_mas_to_medidorFragment"
+            app:destination="@id/medidorFragment"/>
     </fragment>
 
     <fragment
@@ -57,5 +60,10 @@
         android:id="@+id/configFragment"
         android:name="com.example.trabajo1.ui.config.ConfigFragment"
         tools:layout="@layout/fragment_config" />
+    <fragment
+        android:id="@+id/medidorFragment"
+        android:name="com.example.trabajo1.ui.mediorRA.MedidorFragment"
+        tools:layout="@layout/fragment_medidor" />
+
 
 </navigation>

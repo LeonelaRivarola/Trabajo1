@@ -126,6 +126,41 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- BOTÓN MEDIDOR -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardElevation="3dp"
+                app:cardCornerRadius="12dp"
+                app:cardBackgroundColor="@color/card_gray">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/ic_meter"
+                        android:contentDescription="Medidor"
+                        app:tint="@color/icon_primary" />
+
+                    <TextView
+                        android:id="@+id/btnMedidor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:text="Medidor"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
             <!-- BOTÓN CONFIGURACIONES -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
