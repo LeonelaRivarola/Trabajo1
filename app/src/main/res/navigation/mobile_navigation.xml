@@ -62,7 +62,7 @@
         tools:layout="@layout/fragment_config" />
     <fragment
         android:id="@+id/medidorFragment"
-        android:name="com.example.trabajo1.ui.mediorRA.MedidorFragment"
+        android:name="com.example.trabajo1.ui.medidorRA.MedidorFragment"
         tools:layout="@layout/fragment_medidor" />
 
 

@@ -78,6 +78,8 @@ dependencies {
     implementation ("androidx.camera:camera-lifecycle:$camerax_version")
     implementation ("androidx.camera:camera-view:$camerax_version")
     implementation ("androidx.camera:camera-video:$camerax_version")
-
-
+    // ARCore
+    implementation("com.google.ar:core:1.45.0")
+    // Sceneform
+    implementation("com.gorisse.thomas.sceneform:sceneform:1.23.0")
 }
