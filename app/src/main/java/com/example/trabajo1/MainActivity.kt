@@ -2,8 +2,8 @@ package com.example.trabajo1
 
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.hardware.camera2.CameraManager
-import android.net.Uri
 import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Looper
@@ -19,9 +19,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.trabajo1.databinding.ActivityMainBinding
-//mapa
-import com.example.trabajo1.ui.map.MapFragment
-//
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -29,21 +26,79 @@ import com.google.firebase.database.*
 import com.google.firebase.database.FirebaseDatabase
 import androidx.core.net.toUri
 
+// Agregamos las nuevas importaciones para la huella digital
+import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
+import androidx.biometric.BiometricManager
+import androidx.preference.PreferenceManager
+import java.util.concurrent.Executor
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    //varaible para la linterna:
     private lateinit var cameraManager: CameraManager
     private var cameraId: String? = null
-    private var isFlashOn = false // estado del flash
+    private var isFlashOn = false
 
+    // Variables para la autenticación biométrica
+    private lateinit var executor: Executor
+    private lateinit var biometricPrompt: BiometricPrompt
+    private lateinit var promptInfo: BiometricPrompt.PromptInfo
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
+
+        // Se configura el binding y se infla el layout
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Inicializamos los componentes de la autenticación
+        executor = ContextCompat.getMainExecutor(this)
+        biometricPrompt = BiometricPrompt(this, executor,
+            object : BiometricPrompt.AuthenticationCallback() {
+                override fun onAuthenticationError(
+                    errorCode: Int,
+                    errString: CharSequence
+                ) {
+                    super.onAuthenticationError(errorCode, errString)
+                    // Maneja el error de autenticación (ej: usuario cancela, no hay hardware)
+                    Toast.makeText(applicationContext,
+                        "Autenticación con error: $errString", Toast.LENGTH_SHORT)
+                        .show()
+                    finish() // Cierra la app por seguridad
+                }
+
+                override fun onAuthenticationSucceeded(
+                    result: BiometricPrompt.AuthenticationResult
+                ) {
+                    super.onAuthenticationSucceeded(result)
+                    // Autenticación exitosa, ahora muestra el contenido principal
+                    Toast.makeText(applicationContext,
+                        "¡Autenticación exitosa!", Toast.LENGTH_SHORT)
+                        .show()
+                }
+
+                override fun onAuthenticationFailed() {
+                    super.onAuthenticationFailed()
+                    // La huella no coincide, se mantiene el diálogo abierto para reintentar
+                    Toast.makeText(applicationContext, "Autenticación fallida.",
+                        Toast.LENGTH_SHORT)
+                        .show()
+                }
+            })
+
+        // Se configura el cuadro de diálogo de la huella digital
+        promptInfo = BiometricPrompt.PromptInfo.Builder()
+            .setTitle("Autenticación necesaria")
+            .setSubtitle("Usa tu huella digital para acceder a la aplicación")
+            .setDescription("Coloca tu dedo en el sensor para verificar tu identidad.")
+            .setNegativeButtonText("Cancelar")
+            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.BIOMETRIC_WEAK)
+            .build()
+
+        // Se lanza el diálogo de autenticación
+        biometricPrompt.authenticate(promptInfo)
 
         FirebaseDatabase.getInstance().setPersistenceEnabled(true)
 
@@ -193,5 +248,3 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
-
-//main into rama-juan

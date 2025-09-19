@@ -6,35 +6,76 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import com.example.trabajo1.databinding.FragmentPreciosBinding
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.trabajo1.R
 
 class PreciosFragment : Fragment() {
 
-    private var _binding: FragmentPreciosBinding? = null
+    private lateinit var recyclerIngenieria: RecyclerView
+    private lateinit var recyclerOtros: RecyclerView
+    private lateinit var adapterIngenieria: PreciosAdapter
+    private lateinit var adapterOtros: PreciosAdapter
 
-    private val binding get() = _binding!!
+    private val viewModel: PreciosViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        val preciosViewModel =
-            ViewModelProvider(this).get(PreciosViewModel::class.java)
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_precios, container, false)
 
-        _binding = FragmentPreciosBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        recyclerIngenieria = view.findViewById(R.id.recyclerIngenieria)
+        recyclerOtros = view.findViewById(R.id.recyclerOtros)
 
-        val textView: TextView = binding.textPrecios
-        preciosViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+        adapterIngenieria = PreciosAdapter(mutableListOf())
+        adapterOtros = PreciosAdapter(mutableListOf())
+
+        recyclerIngenieria.layoutManager = LinearLayoutManager(requireContext())
+        recyclerOtros.layoutManager = LinearLayoutManager(requireContext())
+
+        recyclerIngenieria.adapter = adapterIngenieria
+        recyclerOtros.adapter = adapterOtros
+
+        // Observamos datos de Firebase
+        viewModel.listaIngenieria.observe(viewLifecycleOwner) { lista ->
+            adapterIngenieria.updateDatos(lista)
         }
-        return root
+
+        viewModel.listaOtros.observe(viewLifecycleOwner) { lista ->
+            adapterOtros.updateDatos(lista)
+        }
+
+        return view
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    class PreciosAdapter(private val items: MutableList<PreciosViewModel.PrecioItem>) :
+        RecyclerView.Adapter<PreciosAdapter.PrecioViewHolder>() {
+
+        inner class PrecioViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+            val txtDescripcion: TextView = itemView.findViewById(R.id.txtDescripcion)
+            val txtValor: TextView = itemView.findViewById(R.id.txtValor)
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PrecioViewHolder {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_precio, parent, false)
+            return PrecioViewHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: PrecioViewHolder, position: Int) {
+            val item = items[position]
+            holder.txtDescripcion.text = item.descripcion
+            holder.txtValor.text = "$${item.valor_minimo} - $${item.valor_maximo}"
+        }
+
+        override fun getItemCount() = items.size
+
+        fun updateDatos(nuevos: List<PreciosViewModel.PrecioItem>) {
+            items.clear()
+            items.addAll(nuevos)
+            notifyDataSetChanged()
+        }
     }
 }

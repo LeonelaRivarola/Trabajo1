@@ -10,13 +10,12 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="28"/>
-    <!-- Permite que la app se pueda utilizar sin camara, en caso de que no se desee
-     permitir esto, cambiar los valores a "true" -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28"/>
+    <!--Permisos de biometria-->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <!-- Permite que la app se pueda utilizar sin camara, en caso de que no se desee permitir esto, cambiar los valores a "true" -->
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.camera.front" android:required="false" />
-
 
     <application
         android:allowBackup="true"
@@ -26,8 +25,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Trabajo1"
-        >
+        android:theme="@style/Theme.Trabajo1">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBBsZKMWcUm2QQ4XOhPCvTv9uwIYTXVOzQ" />
@@ -38,10 +36,8 @@
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
-
 </manifest>
