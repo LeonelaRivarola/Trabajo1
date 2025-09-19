@@ -18,9 +18,9 @@
         tools:layout="@layout/fragment_chat" />
 
     <fragment
-        android:id="@+id/navigation_consejo"
-        android:name="com.example.trabajo1.ui.consejo.ConsejoFragment"
-        tools:layout="@layout/fragment_consejo" />
+        android:id="@+id/navigation_precios"
+        android:name="com.example.trabajo1.ui.precios.PreciosFragment"
+        tools:layout="@layout/fragment_precios" />
 
     <fragment
         android:id="@+id/navigation_mas"

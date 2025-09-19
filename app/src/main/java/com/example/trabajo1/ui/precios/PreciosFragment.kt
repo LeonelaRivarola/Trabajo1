@@ -1,4 +1,4 @@
-package com.example.trabajo1.ui.consejo
+package com.example.trabajo1.ui.precios
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,14 +7,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.trabajo1.databinding.FragmentConsejoBinding
+import com.example.trabajo1.databinding.FragmentPreciosBinding
 
-class ConsejoFragment : Fragment() {
+class PreciosFragment : Fragment() {
 
-    private var _binding: FragmentConsejoBinding? = null
+    private var _binding: FragmentPreciosBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -22,14 +20,14 @@ class ConsejoFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val consejoViewModel =
-            ViewModelProvider(this).get(ConsejoViewModel::class.java)
+        val preciosViewModel =
+            ViewModelProvider(this).get(PreciosViewModel::class.java)
 
-        _binding = FragmentConsejoBinding.inflate(inflater, container, false)
+        _binding = FragmentPreciosBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textConsejo
-        consejoViewModel.text.observe(viewLifecycleOwner) {
+        val textView: TextView = binding.textPrecios
+        preciosViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root

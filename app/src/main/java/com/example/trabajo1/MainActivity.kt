@@ -3,6 +3,7 @@ package com.example.trabajo1
 import android.content.Intent
 import android.content.IntentFilter
 import android.hardware.camera2.CameraManager
+import android.net.Uri
 import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Looper
@@ -26,6 +27,7 @@ import java.util.Date
 import java.util.Locale
 import com.google.firebase.database.*
 import com.google.firebase.database.FirebaseDatabase
+import androidx.core.net.toUri
 
 class MainActivity : AppCompatActivity() {
 
@@ -61,6 +63,15 @@ class MainActivity : AppCompatActivity() {
         //codigo para iniciar el nivel de bateria y realizar el calculo aprox
         registrarBateria()
 
+        //codigo para el botón de llamar
+        val btnPhone: ImageButton = findViewById(R.id.iconPhone)
+        val nroConsejo = "+5402302123456"
+        btnPhone.setOnClickListener {
+            val intent = Intent(Intent.ACTION_DIAL)
+            intent.data = "tel:$nroConsejo".toUri()
+            startActivity(intent)
+        }
+
         //codigo para la linterna
         //Inicializar CameraManager
         cameraManager = getSystemService(CAMERA_SERVICE) as CameraManager
@@ -92,21 +103,18 @@ class MainActivity : AppCompatActivity() {
             setOf(
                 R.id.navigation_inicio,
                 R.id.navigation_chat,
-                R.id.navigation_consejo,
+                R.id.navigation_precios,
                 R.id.navigation_mas
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        val txtFragment = findViewById<TextView>(R.id.txtFragment)
-
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.navigation_inicio -> // Dentro de una Activity o Fragment
-                    txtFragment.text = getString(R.string.title_inicio)
+                R.id.navigation_inicio -> getString(R.string.title_inicio)
                 R.id.navigation_chat -> getString(R.string.title_chat)
-                R.id.navigation_consejo -> getString(R.string.title_consejo)
+                R.id.navigation_precios -> getString(R.string.title_precios)
                 R.id.navigation_mas -> getString(R.string.title_mas)
             }
         }

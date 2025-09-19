@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.mas.MasFragment"
-    android:background="@color/background_light">
+    >
 
     <ScrollView
         android:layout_width="match_parent"
@@ -31,6 +31,7 @@
                 app:cardBackgroundColor="@color/card_gray">
 
                 <LinearLayout
+                    android:id="@+id/btnMapa"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -42,10 +43,9 @@
                         android:layout_height="28dp"
                         android:src="@drawable/ic_map"
                         android:contentDescription="Mapa"
-                        app:tint="@color/icon_primary" />
+                        />
 
                     <TextView
-                        android:id="@+id/btnMapa"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
@@ -66,6 +66,7 @@
                 app:cardBackgroundColor="@color/card_gray">
 
                 <LinearLayout
+                    android:id="@+id/btnGrabadora"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -77,10 +78,9 @@
                         android:layout_height="28dp"
                         android:src="@drawable/ic_mic"
                         android:contentDescription="Grabadora"
-                        app:tint="@color/icon_primary" />
+                        />
 
                     <TextView
-                        android:id="@+id/btnGrabadora"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
@@ -101,6 +101,7 @@
                 app:cardBackgroundColor="@color/card_gray">
 
                 <LinearLayout
+                    android:id="@+id/btnVideo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -112,10 +113,9 @@
                         android:layout_height="28dp"
                         android:src="@drawable/ic_camera"
                         android:contentDescription="Video camara"
-                        app:tint="@color/icon_primary" />
+                        />
 
                     <TextView
-                        android:id="@+id/btnVideo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
@@ -136,6 +136,7 @@
                 app:cardBackgroundColor="@color/card_gray">
 
                 <LinearLayout
+                    android:id="@+id/btnSettings"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -147,10 +148,9 @@
                         android:layout_height="28dp"
                         android:src="@drawable/ic_configuraciones_24dp"
                         android:contentDescription="Configuraciones"
-                        app:tint="@color/icon_primary" />
+                        app:tint="@color/black" />
 
                     <TextView
-                        android:id="@+id/btnSettings"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
