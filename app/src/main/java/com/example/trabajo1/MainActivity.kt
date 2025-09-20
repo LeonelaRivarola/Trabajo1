@@ -26,6 +26,7 @@ import androidx.core.net.toUri
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.biometric.BiometricManager
+import com.google.firebase.database.DatabaseException
 import java.util.concurrent.Executor
 
 class MainActivity : AppCompatActivity() {
@@ -41,9 +42,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Aplicar tamaño de letra elegido
+        aplicarTamanoLetra()
         // Se configura el binding y se infla el layout
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         // Inicializamos los componentes de la autenticación
         executor = ContextCompat.getMainExecutor(this)
         biometricPrompt = BiometricPrompt(this, executor,
@@ -82,15 +86,19 @@ class MainActivity : AppCompatActivity() {
             .setNegativeButtonText("Cancelar")
             .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.BIOMETRIC_WEAK)
             .build()
-        // Se lanza el diálogo de autenticación
-        biometricPrompt.authenticate(promptInfo)
 
-        // Esto permite que Firebase pueda funcionar offline.
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true)
+        // Verificamos si la biometría está activada en configuraciones
+        val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+        val biometricEnabled = prefs.getBoolean("biometric_enabled", false)
+
+        if (biometricEnabled) {
+            biometricPrompt.authenticate(promptInfo)
+        }
 
         // Esto oculta la toolbar por defecto, ya que nosotros usamos una toolbar personalizada.
         supportActionBar?.hide()
-        val toolbar: Toolbar = binding.customToolbar.customToolbar
+        // Usar binding.root.findViewById() para acceder al Toolbar dentro del layout incluido
+        val toolbar: Toolbar = binding.root.findViewById(R.id.customToolbar)
         setSupportActionBar(toolbar)
 
         //codigo para iniciar el reloj
@@ -149,6 +157,15 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_mas -> getString(R.string.title_mas)
             }
         }
+
+        // Firebase
+        try {
+            // Esto permite que Firebase pueda funcionar offline.
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true)
+        } catch (e: DatabaseException) {
+            //Se ignora la excepción de forma segura cuando se hace un recreate() al cambiar el tamaño de la letra de la app-
+        }
+
         // Fin del onCreate.
     }
 
@@ -209,6 +226,23 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Duración estimada de batería: $horasEstimadas horas", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun aplicarTamanoLetra() {
+        val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+        val fontSizePref = prefs.getString("font_size", "medium")
+
+        val config = resources.configuration
+        val escala = when (fontSizePref) {
+            "small" -> 0.85f
+            "medium" -> 1.0f
+            "large" -> 1.15f
+            else -> 1.0f
+        }
+
+        config.fontScale = escala
+        @Suppress("DEPRECATION")
+        resources.updateConfiguration(config, resources.displayMetrics)
     }
 
     override fun onDestroy() {
