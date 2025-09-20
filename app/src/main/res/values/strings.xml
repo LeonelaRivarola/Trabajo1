@@ -26,4 +26,21 @@
     <string name="pause">Pause</string>
     <string name="resume">Resume</string>
     <string name="stop">Stop</string>
+    <string name="escribe_un_mensaje">Escribe un mensaje</string>
+    <string name="boton_enviar_mensaje">boton enviar mensaje</string>
+    <string name="d_lar_oficial">Dólar Oficial</string>
+    <string name="compra">Compra: -</string>
+    <string name="venta">Venta: -</string>
+    <string name="actualizado">Actualizado: -</string>
+    <string name="ingresar_direcci_n">Ingresar dirección</string>
+    <string name="buscar">Buscar</string>
+    <string name="guardar">Guardar</string>
+    <string name="mapa">Mapa</string>
+    <string name="grabadora">Grabadora</string>
+    <string name="video_camara">Video camara</string>
+    <string name="configuraciones">Configuraciones</string>
+    <string name="mapa_">Mapa</string>
+    <string name="grabadora_">Grabadora</string>
+    <string name="camara_mas">Camara</string>
+    <string name="configuraciones_mas">Configuraciones</string>
 </resources>

@@ -2,7 +2,6 @@ package com.example.trabajo1
 
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.SharedPreferences
 import android.hardware.camera2.CameraManager
 import android.os.BatteryManager
 import android.os.Bundle
@@ -22,25 +21,19 @@ import com.example.trabajo1.databinding.ActivityMainBinding
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import com.google.firebase.database.*
 import com.google.firebase.database.FirebaseDatabase
 import androidx.core.net.toUri
-
-// Agregamos las nuevas importaciones para la huella digital
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.biometric.BiometricManager
-import androidx.preference.PreferenceManager
 import java.util.concurrent.Executor
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityMainBinding
-
+    // Variables para la cámara
     private lateinit var cameraManager: CameraManager
     private var cameraId: String? = null
     private var isFlashOn = false
-
     // Variables para la autenticación biométrica
     private lateinit var executor: Executor
     private lateinit var biometricPrompt: BiometricPrompt
@@ -48,11 +41,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         // Se configura el binding y se infla el layout
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         // Inicializamos los componentes de la autenticación
         executor = ContextCompat.getMainExecutor(this)
         biometricPrompt = BiometricPrompt(this, executor,
@@ -64,8 +55,7 @@ class MainActivity : AppCompatActivity() {
                     super.onAuthenticationError(errorCode, errString)
                     // Maneja el error de autenticación (ej: usuario cancela, no hay hardware)
                     Toast.makeText(applicationContext,
-                        "Autenticación con error: $errString", Toast.LENGTH_SHORT)
-                        .show()
+                        "Autenticación con error: $errString", Toast.LENGTH_SHORT).show()
                     finish() // Cierra la app por seguridad
                 }
 
@@ -73,21 +63,17 @@ class MainActivity : AppCompatActivity() {
                     result: BiometricPrompt.AuthenticationResult
                 ) {
                     super.onAuthenticationSucceeded(result)
-                    // Autenticación exitosa, ahora muestra el contenido principal
+                    // Autenticación exitosa
                     Toast.makeText(applicationContext,
-                        "¡Autenticación exitosa!", Toast.LENGTH_SHORT)
-                        .show()
+                        "¡Autenticación exitosa!", Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
                     // La huella no coincide, se mantiene el diálogo abierto para reintentar
-                    Toast.makeText(applicationContext, "Autenticación fallida.",
-                        Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(applicationContext, "Autenticación fallida.", Toast.LENGTH_SHORT).show()
                 }
             })
-
         // Se configura el cuadro de diálogo de la huella digital
         promptInfo = BiometricPrompt.PromptInfo.Builder()
             .setTitle("Autenticación necesaria")
@@ -96,36 +82,22 @@ class MainActivity : AppCompatActivity() {
             .setNegativeButtonText("Cancelar")
             .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.BIOMETRIC_WEAK)
             .build()
-
         // Se lanza el diálogo de autenticación
         biometricPrompt.authenticate(promptInfo)
 
+        // Esto permite que Firebase pueda funcionar offline.
         FirebaseDatabase.getInstance().setPersistenceEnabled(true)
 
-        //Porque este cambio buscar
-        //setContentView(R.layout.activity_main)
-
-        //codigo toolbar:
-        //ocultar la toolbar de android por defecto apra dejar visible la nuestra que esta personalizada
+        // Esto oculta la toolbar por defecto, ya que nosotros usamos una toolbar personalizada.
         supportActionBar?.hide()
-
         val toolbar: Toolbar = binding.customToolbar.customToolbar
         setSupportActionBar(toolbar)
 
         //codigo para iniciar el reloj
         iniciarReloj()
 
-        //codigo para iniciar el nivel de bateria y realizar el calculo aprox
+        //codigo para iniciar el nivel de bateria y realizar el calculo aproximado
         registrarBateria()
-
-        //codigo para el botón de llamar
-        val btnPhone: ImageButton = findViewById(R.id.iconPhone)
-        val nroConsejo = "+5402302123456"
-        btnPhone.setOnClickListener {
-            val intent = Intent(Intent.ACTION_DIAL)
-            intent.data = "tel:$nroConsejo".toUri()
-            startActivity(intent)
-        }
 
         //codigo para la linterna
         //Inicializar CameraManager
@@ -146,14 +118,19 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        //codigo para el botón de llamar
+        val btnPhone: ImageButton = findViewById(R.id.iconPhone)
+        val nroConsejo = "+5402302123456"
+        btnPhone.setOnClickListener {
+            val intent = Intent(Intent.ACTION_DIAL)
+            intent.data = "tel:$nroConsejo".toUri()
+            startActivity(intent)
+        }
+
         //Barra de navegacion inferior:
         val navView: BottomNavigationView = binding.navView
-
-        val navHostFragment = supportFragmentManager
-            .findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
         val navController = navHostFragment.navController
-
-        //
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_inicio,
@@ -164,7 +141,6 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.navigation_inicio -> getString(R.string.title_inicio)
@@ -173,50 +149,46 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_mas -> getString(R.string.title_mas)
             }
         }
+        // Fin del onCreate.
     }
 
-
-//funcion para controlar la linterna
+    //Código para la linterna: Funciones para encender y apagar la linterna
     private fun encenderFlash(){
         cameraId?.let{
             cameraManager.setTorchMode(it, true)
             isFlashOn = true
         }
     }
-
-    private fun  apagarFlash(){
+    private fun apagarFlash(){
         cameraId?.let {
             cameraManager.setTorchMode(it, false)
             isFlashOn = false
         }
     }
 
-    //----------------------------------------------------------------------------------------------
-
-    //funcion para actualizar el reloj
+    // Código para el reloj
     private val handler = android.os.Handler(Looper.getMainLooper())
+    // Funcion para iniciar la hora y luego actualizarla cada un minuto
     private fun iniciarReloj(){
         actualizarHora()
 
         val ahora =System.currentTimeMillis()
-        val retraso = 60000 - (ahora % 60000)//tiempo que falta para el proximo minuto
+        val retraso = 60000 - (ahora % 60000) //tiempo que falta para el proximo minuto
 
         handler.postDelayed(object : Runnable{
             override fun run(){
                 actualizarHora()
-                handler.postDelayed(this, 60000)//cada minuto exacto
+                handler.postDelayed(this, 60000) //cada minuto exacto
             }
         }, retraso)
     }
-
+    // Funcion para actualizar el reloj
     private fun actualizarHora(){
         val horaActual = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
         findViewById<TextView>(R.id.txtHora).text = horaActual
     }
-    //------------------------------------------------------------------------------------------------
 
-
-    //funcion para obtener la duraciòn de la bateria y calcular su duraciòn aproximada
+    // Código para la bateria: Funcion para obtener la duración de la bateria y calcular su duración aproximada
     private fun registrarBateria(){
         val batteryStatus: Intent? = registerReceiver(
            null,
@@ -238,8 +210,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------
-
 
     override fun onDestroy() {
         super.onDestroy()

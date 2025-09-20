@@ -19,40 +19,46 @@
             android:padding="16dp"
             android:gravity="center_horizontal"
             android:divider="?android:attr/dividerVertical"
-            android:showDividers="middle">
+            android:showDividers="middle"
+            >
 
             <!-- BOTÓN MAPA -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="12dp"
                 android:layout_marginBottom="12dp"
-                app:cardElevation="3dp"
                 app:cardCornerRadius="12dp"
-                app:cardBackgroundColor="@color/card_gray">
+                app:cardElevation="4dp"
+                android:backgroundTint="#2d2d2d"
+                >
 
                 <LinearLayout
                     android:id="@+id/btnMapa"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:padding="16dp"
-                    android:gravity="center_vertical">
+                    tools:ignore="UseCompoundDrawables">
 
                     <ImageView
                         android:layout_width="28dp"
                         android:layout_height="28dp"
+                        android:contentDescription="@string/mapa"
                         android:src="@drawable/ic_map"
-                        android:contentDescription="Mapa"
+                        app:tint="#FFFFFF"
                         />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:text="Mapa"
+                        android:text="@string/mapa_"
                         android:textSize="16sp"
                         android:textStyle="bold"
-                        android:textColor="@color/text_primary" />
+                        android:textColor="@color/white"
+                        />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -61,9 +67,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                app:cardElevation="3dp"
+                android:layout_margin="12dp"
                 app:cardCornerRadius="12dp"
-                app:cardBackgroundColor="@color/card_gray">
+                app:cardElevation="4dp"
+                android:backgroundTint="#2d2d2d"
+                >
 
                 <LinearLayout
                     android:id="@+id/btnGrabadora"
@@ -71,23 +79,27 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:padding="16dp"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    tools:ignore="UseCompoundDrawables"
+                    >
 
                     <ImageView
                         android:layout_width="28dp"
                         android:layout_height="28dp"
                         android:src="@drawable/ic_mic"
-                        android:contentDescription="Grabadora"
+                        android:contentDescription="@string/grabadora"
+                        app:tint="#FFFFFF"
                         />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:text="Grabadora"
+                        android:text="@string/grabadora_"
                         android:textSize="16sp"
                         android:textStyle="bold"
-                        android:textColor="@color/text_primary" />
+                        android:textColor="@color/white"
+                        />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -96,9 +108,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                app:cardElevation="3dp"
+                android:layout_margin="12dp"
                 app:cardCornerRadius="12dp"
-                app:cardBackgroundColor="@color/card_gray">
+                app:cardElevation="4dp"
+                android:backgroundTint="#2d2d2d"
+                >
 
                 <LinearLayout
                     android:id="@+id/btnVideo"
@@ -106,23 +120,27 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:padding="16dp"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    tools:ignore="UseCompoundDrawables"
+                    >
 
                     <ImageView
                         android:layout_width="28dp"
                         android:layout_height="28dp"
                         android:src="@drawable/ic_camera"
-                        android:contentDescription="Video camara"
+                        android:contentDescription="@string/video_camara"
+                        app:tint="#FFFFFF"
                         />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:text="Camara"
+                        android:text="@string/camara_mas"
                         android:textSize="16sp"
                         android:textStyle="bold"
-                        android:textColor="@color/text_primary" />
+                        android:textColor="@color/white"
+                        />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -131,9 +149,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                app:cardElevation="3dp"
+                android:layout_margin="12dp"
                 app:cardCornerRadius="12dp"
-                app:cardBackgroundColor="@color/card_gray">
+                app:cardElevation="4dp"
+                android:backgroundTint="#2d2d2d"
+                >
 
                 <LinearLayout
                     android:id="@+id/btnSettings"
@@ -141,23 +161,26 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:padding="16dp"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    tools:ignore="UseCompoundDrawables"
+                    >
 
                     <ImageView
                         android:layout_width="28dp"
                         android:layout_height="28dp"
                         android:src="@drawable/ic_configuraciones_24dp"
-                        android:contentDescription="Configuraciones"
-                        app:tint="@color/black" />
+                        android:contentDescription="@string/configuraciones"
+                        app:tint="#FFFFFF" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:text="Configuraciones"
+                        android:text="@string/configuraciones_mas"
                         android:textSize="16sp"
                         android:textStyle="bold"
-                        android:textColor="@color/text_primary" />
+                        android:textColor="@color/white"
+                        />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

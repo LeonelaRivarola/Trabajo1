@@ -10,7 +10,8 @@
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        tools:ignore="FragmentTagUsage" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardDireccion"
@@ -36,18 +37,25 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Ingresar dirección"
+                android:autofillHints=""
+                android:hint="@string/ingresar_direcci_n"
                 android:inputType="text"
-                android:textColor="#000000"
-                android:textSize="16sp" />
+                android:minHeight="48dp"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textColorHint="?android:attr/textColorHint"
+                android:textSize="16sp"
+                tools:ignore="VisualLintTextFieldSize" />
 
             <ImageButton
                 android:id="@+id/btnBuscarDireccion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Buscar"
-                android:src="@android:drawable/ic_menu_search" />
+                android:contentDescription="@string/buscar"
+                android:minHeight="48dp"
+                android:src="@android:drawable/ic_menu_search"
+                app:tint="?attr/colorOnSurface"
+                tools:ignore="TouchTargetSizeCheck" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -56,7 +64,7 @@
         android:id="@+id/btnGuardar"
         android:layout_width="290dp"
         android:layout_height="57dp"
-        android:text="Guardar"
+        android:text="@string/guardar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

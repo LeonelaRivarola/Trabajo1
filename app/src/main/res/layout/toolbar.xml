@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-    <!-- Barra superior personalizada -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/customToolbar"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:background="@color/material_dynamic_neutral30"
+        android:background="#2d2d2d"
         android:paddingTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,12 +19,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
             android:layout_marginEnd="8dp"
-            >
-
-            <!-- Hora -->
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/txtHora"
@@ -34,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="@string/title_hora"
-                android:textColor="@android:color/white"
+                android:textColor="@color/on_primary_dark"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -48,8 +43,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_porcentaje_bateria"
-                android:textColor="@android:color/white"
+                android:textColor="@color/on_primary_dark"
                 android:textSize="20sp"
+                android:textStyle="bold"
                 />
 
             <ImageButton
@@ -61,7 +57,9 @@
                 android:contentDescription="@string/linterna"
                 android:minWidth="48dp"
                 android:minHeight="48dp"
-                android:src="@drawable/ic_bateria_24dp" />
+                android:src="@drawable/ic_bateria_24dp"
+                android:backgroundTint="@color/white"
+                />
 
             <ImageButton
                 android:id="@+id/btnLinterna"
@@ -72,7 +70,9 @@
                 android:contentDescription="@string/linterna"
                 android:minWidth="48dp"
                 android:minHeight="48dp"
-                android:src="@drawable/ic_linterna_apagada" />
+                android:src="@drawable/ic_linterna_apagada"
+                android:backgroundTint="@color/white"
+                />
 
             <ImageButton
                 android:id="@+id/iconPhone"
