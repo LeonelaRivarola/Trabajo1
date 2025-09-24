@@ -46,8 +46,12 @@
             android:id="@+id/action_navigation_mas_to_configFragment"
             app:destination="@id/configFragment"/>
         <action
+            android:id="@+id/action_navigation_mas_to_medidorFragment"
+            app:destination="@id/medidorFragment"/>
+        <action
             android:id="@+id/action_mapFragment_to_listaFragment"
             app:destination="@id/listaFragment"/>
+
 
     </fragment>
 
@@ -64,8 +68,13 @@
         android:name="com.example.trabajo1.ui.voice.VoiceFragment"
         tools:layout="@layout/fragment_voice" />
     <fragment
+        android:id="@+id/medidorFragment"
+        android:name="com.example.trabajo1.ui.medidorAR.MedidorARFragment"
+        tools:layout="@layout/fragment_medida" />
+    <fragment
         android:id="@+id/configFragment"
         android:name="com.example.trabajo1.ui.config.ConfigFragment"
         tools:layout="@layout/fragment_config" />
+
 
 </navigation>

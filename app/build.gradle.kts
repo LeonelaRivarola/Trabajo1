@@ -65,7 +65,6 @@ dependencies {
     implementation("com.google.firebase:firebase-database-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
-    implementation("com.google.firebase:firebase-database:20.3.0")
     implementation(libs.androidx.contentpager)
     implementation(libs.androidx.swiperefreshlayout)
     testImplementation(libs.junit)
@@ -81,5 +80,8 @@ dependencies {
     //biometria (huella digital)
     implementation("androidx.biometric:biometric:1.1.0")
     implementation("androidx.preference:preference-ktx:1.2.1")
+    // AR
+    implementation("com.google.ar:core:1.37.0")
+    implementation("com.gorisse.thomas.sceneform:sceneform:1.20.2")
 
 }

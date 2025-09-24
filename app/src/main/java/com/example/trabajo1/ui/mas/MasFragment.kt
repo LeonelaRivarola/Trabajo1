@@ -34,9 +34,13 @@ class MasFragment : Fragment() {
         binding.btnGrabadora.setOnClickListener {
             findNavController().navigate(R.id.action_navigation_mas_to_voiceFragment)
         }
+        binding.btnMedidorAR.setOnClickListener {
+            findNavController().navigate(R.id.action_navigation_mas_to_medidorFragment)
+        }
         binding.btnSettings.setOnClickListener {
             findNavController().navigate(R.id.action_navigation_mas_to_configFragment)
         }
+
 
         return binding.root
     }
