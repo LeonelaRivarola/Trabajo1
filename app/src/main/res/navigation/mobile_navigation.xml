@@ -18,14 +18,20 @@
         tools:layout="@layout/fragment_chat" />
 
     <fragment
-        android:id="@+id/navigation_consejo"
-        android:name="com.example.trabajo1.ui.consejo.ConsejoFragment"
-        tools:layout="@layout/fragment_consejo" />
+        android:id="@+id/navigation_precios"
+        android:name="com.example.trabajo1.ui.precios.PreciosFragment"
+        tools:layout="@layout/fragment_precios" />
 
     <fragment
         android:id="@+id/navigation_mas"
         android:name="com.example.trabajo1.ui.mas.MasFragment"
         tools:layout="@layout/fragment_mas" >
+
+        <fragment
+            android:id="@+id/listaFragment"
+            android:name="com.example.trabajo1.ui.map.ListaFragment"
+            android:label="Lugares guardados"
+            tools:layout="@layout/fragment_lista"/>
 
         <action
             android:id="@+id/action_navigation_mas_to_mapFragment"
@@ -39,6 +45,10 @@
         <action
             android:id="@+id/action_navigation_mas_to_configFragment"
             app:destination="@id/configFragment"/>
+        <action
+            android:id="@+id/action_mapFragment_to_listaFragment"
+            app:destination="@id/listaFragment"/>
+
     </fragment>
 
     <fragment

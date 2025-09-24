@@ -27,7 +27,7 @@
                 android:id="@+id/txtDolarTitulo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dólar Oficial"
+                android:text="@string/d_lar_oficial"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -35,19 +35,19 @@
                 android:id="@+id/txtDolarCompra"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Compra: -" />
+                android:text="@string/compra" />
 
             <TextView
                 android:id="@+id/txtDolarVenta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Venta: -" />
+                android:text="@string/venta" />
 
             <TextView
                 android:id="@+id/txtDolarFecha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Actualizado: -"
+                android:text="@string/actualizado"
                 android:textSize="12sp" />
 
         </LinearLayout>

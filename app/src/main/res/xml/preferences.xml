@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Switch para activar/desactivar huella -->
+    <SwitchPreferenceCompat
+        android:key="biometric_enabled"
+        android:title="Autenticación por huella"
+        android:summary="Activa o desactiva la autenticación biométrica"
+        android:defaultValue="false" />
+
+    <!-- Lista de tamaños de letra -->
+    <ListPreference
+        android:key="font_size"
+        android:title="Tamaño de letra"
+        android:summary="Selecciona el tamaño de la fuente en la app"
+        android:entries="@array/font_size_entries"
+        android:entryValues="@array/font_size_values"
+        android:defaultValue="medium" />
+
+</PreferenceScreen>

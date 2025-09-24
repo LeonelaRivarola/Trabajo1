@@ -13,40 +13,91 @@ import android.widget.Toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.trabajo1.databinding.ActivityMainBinding
-//mapa
-import com.example.trabajo1.ui.map.MapFragment
-//
+import androidx.core.net.toUri
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import com.google.firebase.database.*
 import com.google.firebase.database.FirebaseDatabase
+import java.util.concurrent.Executor
+import androidx.biometric.BiometricPrompt
+import androidx.biometric.BiometricManager
+
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    //varaible para la linterna:
+    //varaible para la linterna y camara:
     private lateinit var cameraManager: CameraManager
     private var cameraId: String? = null
     private var isFlashOn = false // estado del flash
+//variables para la autenticacion biometrica
+    private lateinit var executor: Executor
+    private lateinit var biometricPrompt: BiometricPrompt
+    private lateinit var promptInfo: BiometricPrompt.PromptInfo
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
+        // Aplicar tamaño de letra elegido
+        aplicarTamanoLetra()
+        // Se configura el binding y se infla el layout
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true)
+        // Inicializamos los componentes de la autenticación
+        executor = ContextCompat.getMainExecutor(this)
+        biometricPrompt = BiometricPrompt(this, executor,
+            object : BiometricPrompt.AuthenticationCallback() {
+                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+                    super.onAuthenticationError(errorCode, errString)
+                    // Maneja el error de autenticación (ej: usuario cancela, no hay hardware)
+                    Toast.makeText(applicationContext,
+                        "Autenticación con error: $errString", Toast.LENGTH_SHORT).show()
+                    finish() // Cierra la app por seguridad
+                }
 
-        //Porque este cambio buscar
-        //setContentView(R.layout.activity_main)
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                    super.onAuthenticationSucceeded(result)
+                    // Autenticación exitosa
+                    Toast.makeText(applicationContext,
+                        "¡Autenticación exitosa!", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onAuthenticationFailed() {
+                    super.onAuthenticationFailed()
+                    // La huella no coincide, se mantiene el diálogo abierto para reintentar
+                    Toast.makeText(applicationContext, "Autenticación fallida.", Toast.LENGTH_SHORT).show()
+                }
+            })
+
+        // Se configura el cuadro de diálogo de la huella digital
+        promptInfo = BiometricPrompt.PromptInfo.Builder()
+            .setTitle("Autenticación necesaria")
+            .setSubtitle("Usa tu huella digital para acceder a la aplicación")
+            .setDescription("Coloca tu dedo en el sensor para verificar tu identidad.")
+            .setNegativeButtonText("Cancelar")
+            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.BIOMETRIC_WEAK)
+            .build()
+
+        // Verificamos si la biometría está activada en configuraciones
+        val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+        val biometricEnabled = prefs.getBoolean("biometric_enabled", false)
+
+        if (biometricEnabled) {
+            biometricPrompt.authenticate(promptInfo)
+        }
+
+//        FirebaseDatabase.getInstance().setPersistenceEnabled(true)
+
 
         //codigo toolbar:
         //ocultar la toolbar de android por defecto apra dejar visible la nuestra que esta personalizada
@@ -80,47 +131,59 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        //codigo para el botón de llamar
+        val btnPhone: ImageButton = findViewById(R.id.iconPhone)
+        val nroConsejo = "+5402302123456"
+        btnPhone.setOnClickListener {
+            val intent = Intent(Intent.ACTION_DIAL)
+            intent.data = "tel:$nroConsejo".toUri()
+            startActivity(intent)
+        }
+
         //Barra de navegacion inferior:
         val navView: BottomNavigationView = binding.navView
-
-        val navHostFragment = supportFragmentManager
-            .findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
         val navController = navHostFragment.navController
-
-        //
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_inicio,
                 R.id.navigation_chat,
-                R.id.navigation_consejo,
+                R.id.navigation_precios,
                 R.id.navigation_mas
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        val txtFragment = findViewById<TextView>(R.id.txtFragment)
+//        val txtFragment = findViewById<TextView>(R.id.txtFragment)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.navigation_inicio -> // Dentro de una Activity o Fragment
-                    txtFragment.text = getString(R.string.title_inicio)
+                R.id.navigation_inicio -> getString(R.string.title_inicio)
                 R.id.navigation_chat -> getString(R.string.title_chat)
-                R.id.navigation_consejo -> getString(R.string.title_consejo)
+                R.id.navigation_precios -> getString(R.string.title_precios)
                 R.id.navigation_mas -> getString(R.string.title_mas)
             }
         }
+
+        // Firebase
+        try {
+            // Esto permite que Firebase pueda funcionar offline.
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true)
+        } catch (e: DatabaseException) {
+            //Se ignora la excepción de forma segura cuando se hace un recreate() al cambiar el tamaño de la letra de la app-
+        }
+
     }
 
 
-//funcion para controlar la linterna
+    //Código para la linterna: Funciones para encender y apagar la linterna
     private fun encenderFlash(){
         cameraId?.let{
             cameraManager.setTorchMode(it, true)
             isFlashOn = true
         }
     }
-
     private fun  apagarFlash(){
         cameraId?.let {
             cameraManager.setTorchMode(it, false)
@@ -130,7 +193,7 @@ class MainActivity : AppCompatActivity() {
 
     //----------------------------------------------------------------------------------------------
 
-    //funcion para actualizar el reloj
+    // Código para el reloj
     private val handler = android.os.Handler(Looper.getMainLooper())
     private fun iniciarReloj(){
         actualizarHora()
@@ -146,14 +209,14 @@ class MainActivity : AppCompatActivity() {
         }, retraso)
     }
 
+    // Funcion para actualizar el reloj
     private fun actualizarHora(){
         val horaActual = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
         findViewById<TextView>(R.id.txtHora).text = horaActual
     }
-    //------------------------------------------------------------------------------------------------
 
 
-    //funcion para obtener la duraciòn de la bateria y calcular su duraciòn aproximada
+    // Código para la bateria: Funcion para obtener la duración de la bateria y calcular su duración aproximada
     private fun registrarBateria(){
         val batteryStatus: Intent? = registerReceiver(
            null,
@@ -175,7 +238,23 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------
+
+    private fun aplicarTamanoLetra() {
+        val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+        val fontSizePref = prefs.getString("font_size", "medium")
+
+        val config = resources.configuration
+        val escala = when (fontSizePref) {
+            "small" -> 0.85f
+            "medium" -> 1.0f
+            "large" -> 1.15f
+            else -> 1.0f
+        }
+
+        config.fontScale = escala
+        @Suppress("DEPRECATION")
+        resources.updateConfiguration(config, resources.displayMetrics)
+    }
 
 
     override fun onDestroy() {

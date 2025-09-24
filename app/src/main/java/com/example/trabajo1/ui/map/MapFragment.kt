@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -26,6 +27,8 @@ import kotlin.collections.isNotEmpty
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.findNavController
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
@@ -42,6 +45,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var edtDireccion: EditText
     private lateinit var btnBuscar: ImageButton
     private lateinit var btnGuardar: android.widget.Button
+    private lateinit var btnBack: ImageButton
 
     private var ultimaLatLng: LatLng? = null
     private var ultimaDireccion: String? = null
@@ -57,9 +61,16 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Oculta la Toolbar del Activity (si existe) en el oncreatedview
+        (requireActivity() as AppCompatActivity).supportActionBar?.hide()
+        // Oculta la BottomNavigationView
+        val bottomNav = requireActivity().findViewById<View>(R.id.nav_view)
+        bottomNav?.visibility = View.GONE
+
         edtDireccion = view.findViewById(R.id.edtDireccion)
         btnBuscar = view.findViewById(R.id.btnBuscarDireccion)
         btnGuardar = view.findViewById(R.id.btnGuardar)
+        btnBack = view.findViewById(R.id.btnBack)
 
         // Cuando tocan buscar
         btnBuscar.setOnClickListener {
@@ -74,15 +85,81 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         // Guardar en Firebase cuando aprietan el botón
         btnGuardar.setOnClickListener {
             if (ultimaLatLng != null && ultimaDireccion != null) {
-                guardar(ultimaLatLng!!, ultimaDireccion!!)
+//                guardar(ultimaLatLng!!, ultimaDireccion!!)
+                mostrarDialogoReferencia()
             } else {
                 Toast.makeText(requireContext(), "Seleccione una ubicación primero", Toast.LENGTH_SHORT).show()
             }
         }
 
+        val btnVerGuardados = view.findViewById<Button>(R.id.btnVerGuardados)
+        btnVerGuardados.setOnClickListener {
+            findNavController().navigate(R.id.action_mapFragment_to_listaFragment)
+        }
+
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
+
+        btnBack.setOnClickListener {
+//            stopRecording()
+            findNavController().navigateUp()
+        }
+    }
+
+    private fun mostrarDialogoReferencia() {
+        val builder = android.app.AlertDialog.Builder(requireContext())
+        val inflater = layoutInflater
+        val dialogView = inflater.inflate(R.layout.dialogo_referencia, null)
+        builder.setView(dialogView)
+
+        //Para que escriba en la referencia
+        val input = dialogView.findViewById<EditText>(R.id.edtReferenciaDialog)
+        val btnGuardarDialog = dialogView.findViewById<Button>(R.id.btnGuardarDialog)
+        val btnCancelarDialog = dialogView.findViewById<Button>(R.id.btnCancelarDialog)
+
+        val dialog = builder.create()
+        dialog.show()
+
+        // Botón Guardar
+        btnGuardarDialog.setOnClickListener {
+            val referencia = input.text.toString()
+            if (referencia.isNotEmpty()) {
+                guardarConReferencia(ultimaLatLng!!, ultimaDireccion!!, referencia)
+                dialog.dismiss()
+            } else {
+                Toast.makeText(requireContext(), "Ingrese una referencia", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Botón Cancelar
+        btnCancelarDialog.setOnClickListener {
+            dialog.dismiss()
+        }
+    }
+
+    private fun guardarConReferencia(latLng: LatLng, direccion: String, referencia: String) {
+        val database = FirebaseDatabase.getInstance()
+        val ref = database.getReference("lugares")
+
+        val lugarId = ref.push().key
+        val datos = hashMapOf(
+            "lat" to latLng.latitude,
+            "lng" to latLng.longitude,
+            "direccion" to direccion,
+            "referencia" to referencia
+        )
+
+        if (lugarId != null) {
+            ref.child(lugarId).setValue(datos)
+                .addOnSuccessListener {
+                    Toast.makeText(requireContext(), "Lugar guardado", Toast.LENGTH_SHORT).show()
+        }
+            .addOnFailureListener {
+                Toast.makeText(requireContext(), "Error al guardar el lugar", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun buscarLugar(query: String) {
@@ -144,7 +221,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 ?.let { parent -> (parent as View).findViewById<View>("2".toInt()) }
             locationButton?.let { btn ->
                 val params = btn.layoutParams as ViewGroup.MarginLayoutParams
-                params.setMargins(0, 220, 30, 0)
+                params.setMargins(0, 500, 50, 0)
                 btn.layoutParams =params
             }
         }
@@ -163,14 +240,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 val direccion = direcciones[0].getAddressLine(0)
                 edtDireccion.setText(direccion)
                 ultimaDireccion = direccion
-
-                // 👇 acá podés guardar en Firebase lo que necesites
-//                val datos = hashMapOf(
-//                    "lat" to latLng.latitude,
-//                    "lng" to latLng.longitude,
-//                    "direccion" to direccion
-//                )
-                // Firebase.firestore.collection("lugares").add(datos) ...
             } else {
                 ultimaDireccion = "${latLng.latitude}, ${latLng.longitude}"
                 edtDireccion.setText(ultimaDireccion)
@@ -179,28 +248,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             ultimaLatLng = latLng
         }
     }
-
-    private fun guardar(latLng: LatLng, direccion: String){
-        val database = FirebaseDatabase.getInstance()
-        val ref = database.getReference("lugares")
-
-        val lugarId = ref.push().key
-        val datos = hashMapOf(
-            "lat" to latLng.latitude,
-            "lng" to latLng.longitude,
-            "direccion" to direccion
-        )
-
-        if(lugarId != null){
-            ref.child(lugarId).setValue(datos)
-                .addOnSuccessListener {
-                    Toast.makeText(requireContext(), "Lugar guardado", Toast.LENGTH_SHORT).show()
-                }
-                .addOnFailureListener {
-                    Toast.makeText(requireContext(), "Error al guardar el lugar", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
 
     //si los permisos se dieron, se muestra la ubicacion sino se vuelven a pedir los permisos
     private fun pedirPermisos() {
@@ -253,4 +300,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Vuelve a mostrarla cuando salís del fragment
+        (requireActivity() as AppCompatActivity).supportActionBar?.show()
+        // Vuelve a mostrar la BottomNavigationView
+        val bottomNav = requireActivity().findViewById<View>(R.id.nav_view)
+        bottomNav?.visibility = View.VISIBLE
+    }
 }

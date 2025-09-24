@@ -12,9 +12,9 @@
         android:title="@string/title_chat" />
 
     <item
-        android:id="@+id/navigation_consejo"
-        android:icon="@drawable/ic_consejo_24dp"
-        android:title="@string/title_consejo" />
+        android:id="@+id/navigation_precios"
+        android:icon="@drawable/ic_precios_24dp"
+        android:title= "@string/title_precios" />
 
     <item
         android:id="@+id/navigation_mas"

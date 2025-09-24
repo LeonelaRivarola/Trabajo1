@@ -78,6 +78,8 @@ dependencies {
     implementation ("androidx.camera:camera-lifecycle:$camerax_version")
     implementation ("androidx.camera:camera-view:$camerax_version")
     implementation ("androidx.camera:camera-video:$camerax_version")
-
+    //biometria (huella digital)
+    implementation("androidx.biometric:biometric:1.1.0")
+    implementation("androidx.preference:preference-ktx:1.2.1")
 
 }

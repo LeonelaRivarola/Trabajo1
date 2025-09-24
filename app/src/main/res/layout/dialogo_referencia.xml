@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/dialog_background">
+
+    <TextView
+        android:id="@+id/tvTituloDialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Descripción"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="12dp"/>
+
+    <EditText
+        android:id="@+id/edtReferenciaDialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Escriba una referencia"
+        android:inputType="text"
+        android:background="@drawable/edittext_background"
+        android:padding="12dp"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- Contenedor horizontal para los botones -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:spacing="8dp">
+
+        <Button
+            android:id="@+id/btnCancelarDialog"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="Cancelar"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/btn_can"
+            android:textSize="16sp"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/btnGuardarDialog"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="Guardar"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/btn_guardar"
+            android:textSize="16sp"/>
+    </LinearLayout>
+</LinearLayout>
