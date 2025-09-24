@@ -1,6 +1,7 @@
 package com.example.trabajo1.ui.config
 
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.example.trabajo1.R
@@ -17,4 +18,9 @@ class ConfigFragment : PreferenceFragmentCompat() {
             true
         }
     }
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as AppCompatActivity).supportActionBar?.show()
+    }
+
 }

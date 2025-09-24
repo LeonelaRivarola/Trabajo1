@@ -4,10 +4,12 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.trabajo1.R
 import com.google.ar.core.Anchor
 import com.google.ar.core.Pose
@@ -27,6 +29,7 @@ class MedidorARFragment : Fragment(R.layout.fragment_medida) {
     private lateinit var tvDistance: TextView
     private val placedAnchors = mutableListOf<Anchor>()
     private lateinit var arFragment: ArFragment
+    private lateinit var btnBack: ImageButton
     companion object {
         private const val REQUEST_CAMERA_PERMISSION = 1001
     }
@@ -47,6 +50,11 @@ class MedidorARFragment : Fragment(R.layout.fragment_medida) {
         } else {
             // pide permiso de cámara
             requestPermissions(arrayOf(Manifest.permission.CAMERA), REQUEST_CAMERA_PERMISSION)
+        }
+        btnBack = view.findViewById(R.id.btnBack)
+
+        btnBack.setOnClickListener {
+            findNavController().navigateUp()
         }
     }
 

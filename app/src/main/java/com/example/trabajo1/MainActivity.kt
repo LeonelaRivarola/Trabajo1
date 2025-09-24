@@ -190,6 +190,20 @@ class MainActivity : AppCompatActivity() {
             isFlashOn = false
         }
     }
+    override fun onPause() {
+        super.onPause()
+        // Apagar la linterna cuando la app no está en primer plano
+        if (isFlashOn) {
+            apagarFlash()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (isFlashOn) {
+            apagarFlash()
+        }
+    }
 
     //----------------------------------------------------------------------------------------------
 
